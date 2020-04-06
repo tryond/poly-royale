@@ -26,6 +26,8 @@ public class Arena : MonoBehaviour
 
     private Polygon polygon;
 
+    private Coroutine currentTransition = null;
+
     void Awake()
     {
         polygon = new Polygon(numPlayers, sideLength);
@@ -55,7 +57,7 @@ public class Arena : MonoBehaviour
         {
             ball = Instantiate(ballPrefab, Vector3.zero, Quaternion.identity);
             ball.transform.localScale = new Vector3(0.5f, 0.5f, 1f);    // TODO: where should this be set?
-            ball.velocity = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * 5f;
+            ball.velocity = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * 10f;
         }
     }
 
@@ -79,8 +81,7 @@ public class Arena : MonoBehaviour
                 startPositions[i] = goals[i].transform.position;
                 startRotations[i] = goals[i].transform.rotation;
             }
-
-            StartCoroutine(TransitionGoals(Time.time, startPositions, startRotations));
+            currentTransition = StartCoroutine(TransitionGoals(Time.time, startPositions, startRotations));
         }
     }
 
@@ -99,21 +100,30 @@ public class Arena : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+        currentTransition = null;
     }
 
-    public void GoalScored(Goal goal)
+    public void GoalScored(Goal goal, Ball ball)
     {
+        
+
+
         if (goal == playerGoal)
         {
             UnityEngine.Application.Quit();
         }
         else
         {
+            if (currentTransition != null)
+                StopCoroutine(currentTransition);
+
+            // TODO: this is temporary, should have some effect
+            Destroy(ball.transform.gameObject);
+
             goals.Remove(goal);
             Destroy(goal.transform.gameObject);
 
-            numPlayers -= 1;
-            polygon = new Polygon(numPlayers, sideLength);
+            polygon = new Polygon(goals.Count, sideLength);
             SetGoalTransforms(true);
         }
     }
