@@ -19,8 +19,6 @@ public class Goal : MonoBehaviour
         Debug.DrawLine(leftBound.transform.position, rightBound.transform.position, Color.cyan);
     }
 
-
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         var ball = collision.GetComponent<Ball>();

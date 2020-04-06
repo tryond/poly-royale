@@ -105,9 +105,6 @@ public class Arena : MonoBehaviour
 
     public void GoalScored(Goal goal, Ball ball)
     {
-        
-
-
         if (goal == playerGoal)
         {
             UnityEngine.Application.Quit();
@@ -127,4 +124,14 @@ public class Arena : MonoBehaviour
             SetGoalTransforms(true);
         }
     }
+
+
+    private void Update()
+    {
+        for (int i = 0; i < goals.Count; ++i)
+        {
+            Debug.DrawLine(goals[i].rightBound.transform.position, goals[(i + 1) % goals.Count].leftBound.transform.position, Color.yellow);
+        }
+    }
+
 }
