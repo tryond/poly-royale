@@ -16,18 +16,13 @@ public class Paddle : MonoBehaviour
 
     protected float movement; // between -1 and 1
 
+    [SerializeField] Goal goal;
+
     private void Awake()
     {
-        var oldRotation = transform.rotation;
-        transform.parent.rotation = Quaternion.identity;
-
         paddleWidth = transform.GetComponent<SpriteRenderer>().bounds.extents.x;
-        parentWidth = transform.parent.GetComponent<SpriteRenderer>().bounds.extents.x;
-
-        rightBound = (parentWidth - paddleWidth) / transform.parent.localScale.x;
-        leftBound = -rightBound;
-
-        transform.parent.rotation = oldRotation;
+        leftBound = goal.leftBound.transform.localPosition.x + (paddleWidth / transform.parent.localScale.x);
+        rightBound = goal.rightBound.transform.localPosition.x - (paddleWidth / transform.parent.localScale.x);
     }
 
     public Vector3 GetNormalVector()

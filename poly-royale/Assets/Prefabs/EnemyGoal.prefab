@@ -272,6 +272,7 @@ MonoBehaviour:
   speed: 0.25
   maxNormalAngle: 45
   maxReflectionAngle: 60
+  goal: {fileID: 8398790626649020725}
 --- !u!1 &3055247630147042134
 GameObject:
   m_ObjectHideFlags: 0
