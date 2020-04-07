@@ -36,7 +36,7 @@ public class Goal : MonoBehaviour
         SetBounds(leftBound.transform.position, position);
     }
 
-    private void SetBounds(Vector2 leftPosition, Vector2 rightPosition)
+    public void SetBounds(Vector2 leftPosition, Vector2 rightPosition)
     {
         // set position
         transform.position = new Vector3((leftPosition.x + rightPosition.x) / 2, (leftPosition.y + rightPosition.y) / 2, 0f);

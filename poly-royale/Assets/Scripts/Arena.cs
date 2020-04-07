@@ -67,35 +67,41 @@ public class Arena : MonoBehaviour
         {
             for (int i = 0; i < goals.Count; ++i)
             {
-                goals[i].transform.position = polygon.positions[i];
-                goals[i].transform.rotation = polygon.rotations[i];
+                goals[i].SetBounds(polygon.positions[i], polygon.positions[(i + 1) % polygon.positions.Length]);
             }
         }
         else
         {
-            var startPositions = new Vector3[goals.Count];
-            var startRotations = new Quaternion[goals.Count];
+            var startLeftPositions = new Vector2[goals.Count];
+            var startRightPositions = new Vector2[goals.Count];
 
             for (int i = 0; i < goals.Count; ++i)
             {
-                startPositions[i] = goals[i].transform.position;
-                startRotations[i] = goals[i].transform.rotation;
+                startLeftPositions[i] = goals[i].leftBound.transform.position;
+                startRightPositions[i] = goals[i].rightBound.transform.position;
+
             }
-            currentTransition = StartCoroutine(TransitionGoals(Time.time, startPositions, startRotations));
+            currentTransition = StartCoroutine(TransitionGoals(Time.time, startLeftPositions, startRightPositions));
         }
     }
 
-    private IEnumerator TransitionGoals(float startTime, Vector3[] startPositions, Quaternion[] startRotations)
+    private IEnumerator TransitionGoals(float startTime, Vector2[] startLeftPositions, Vector2[] startRightPositions)
     {
         float transition = 0f;
         float elapsedTime = 0f;
+
+        Vector3 leftPos;
+        Vector3 rightPos;
+
         while (transition < 1f)
         {
             transition = Mathf.Clamp(elapsedTime / transitionTime, 0f, 1f);
             for (int i = 0; i < goals.Count; ++i)
             {
-                goals[i].transform.position = Vector3.Lerp(startPositions[i], polygon.positions[i], transition);
-                goals[i].transform.rotation = Quaternion.Lerp(startRotations[i], polygon.rotations[i], transition);
+                leftPos = Vector2.Lerp(startLeftPositions[i], polygon.positions[i], transition);
+                rightPos = Vector2.Lerp(startRightPositions[i], polygon.positions[(i + 1) % goals.Count], transition);
+                goals[i].SetBounds(leftPos, rightPos);
+                
             }
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
