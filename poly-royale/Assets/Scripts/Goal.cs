@@ -25,4 +25,35 @@ public class Goal : MonoBehaviour
         if (ball)
             arena.GoalScored(this, collision.GetComponent<Ball>());
     }
+
+    public void SetLeftBound(Vector2 position)
+    {
+        SetBounds(position, rightBound.transform.position);
+    }
+
+    public void SetRightBound(Vector2 position)
+    {
+        SetBounds(leftBound.transform.position, position);
+    }
+
+    private void SetBounds(Vector2 leftPosition, Vector2 rightPosition)
+    {
+        // set position
+        transform.position = new Vector3((leftPosition.x + rightPosition.x) / 2, (leftPosition.y + rightPosition.y) / 2, 0f);
+
+        Debug.Log("New Position: " + transform.position);
+
+        // set rotation
+        Vector2 perpendicular = Vector2.Perpendicular(rightPosition - leftPosition);
+        transform.up = perpendicular;
+
+        // set scale
+        var oldDistance = Vector3.Distance(rightBound.transform.position, leftBound.transform.position);
+        var newDistance = Vector2.Distance(rightPosition, leftPosition);
+        transform.localScale *= newDistance / oldDistance;
+
+        // set bound positions
+        leftBound.transform.position = leftPosition;
+        rightBound.transform.position = rightPosition;
+    }
 }
