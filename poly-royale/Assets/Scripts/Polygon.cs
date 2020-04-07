@@ -6,30 +6,29 @@ using UnityEngine;
 
 public class Polygon
 {
-    // TODO: determine accessibility
-    public Vector3[] positions;
-    public Quaternion[] rotations;
+    [HideInInspector] public Vector3[] positions;
 
-    public Polygon(int numSides, float sideLength)
+    private float sideLength;
+    private float radius;
+
+    public Polygon(int numSides, float radius)
     {
-        Setup(numSides, sideLength);
+        Setup(numSides, radius);
     }
 
-    private void Setup(int numSides, float sideLength)
+    private void Setup(int numSides, float radius)
     {
         positions = new Vector3[numSides];
-        rotations = new Quaternion[numSides];
-
         float theta = 360f / numSides;
-        // coverts degrees to radians
-        float radius = (float)(sideLength / (2f * System.Math.Tan((theta * System.Math.PI) / 360f)));
-        Vector3 baseVertex = new Vector3(0f, -radius, 0f);
+        sideLength = (float)(2f * radius * System.Math.Tan((theta * System.Math.PI) / 360f));
+        Vector3 baseVertex = Quaternion.Euler(0f, 0f, -theta / 2) * new Vector3(0f, -radius, 0f); ;
 
         for (var i = 0; i < numSides; ++i)
-        {
             positions[i] = Quaternion.Euler(0f, 0f, theta * i) * baseVertex;
-            rotations[i] = Quaternion.Euler(0f, 0f, theta * i);
-        }
+    }
 
+    public float GetSideLength()
+    {
+        return sideLength;
     }
 }

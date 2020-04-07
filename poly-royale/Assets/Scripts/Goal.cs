@@ -41,8 +41,6 @@ public class Goal : MonoBehaviour
         // set position
         transform.position = new Vector3((leftPosition.x + rightPosition.x) / 2, (leftPosition.y + rightPosition.y) / 2, 0f);
 
-        Debug.Log("New Position: " + transform.position);
-
         // set rotation
         Vector2 perpendicular = Vector2.Perpendicular(rightPosition - leftPosition);
         transform.up = perpendicular;

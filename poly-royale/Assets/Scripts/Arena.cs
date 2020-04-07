@@ -15,10 +15,13 @@ public class Arena : MonoBehaviour
     [SerializeField] int numPlayers;
     [SerializeField] int numBalls;
 
-    [SerializeField] float sideLength;
+    [SerializeField] float radius;
+    [SerializeField] float ballToSideRatio;
+
 
     [SerializeField] Goal playerGoalPrefab;
     [SerializeField] Goal enemyGoalPrefab;
+
     [SerializeField] Ball ballPrefab;
 
     private Goal playerGoal;
@@ -30,10 +33,9 @@ public class Arena : MonoBehaviour
 
     void Awake()
     {
-        polygon = new Polygon(numPlayers, sideLength);
+        polygon = new Polygon(numPlayers, radius);
 
         playerGoal = Instantiate(playerGoalPrefab, Vector3.zero, Quaternion.identity);
-        playerGoal.transform.localScale = new Vector3(sideLength, sideLength / 3f, 1f); // TODO: where should this be set?
         playerGoal.transform.parent = gameObject.transform;
         goals.Add(playerGoal);
 
@@ -41,7 +43,6 @@ public class Arena : MonoBehaviour
         for (int i = 1; i < numPlayers; ++i)
         {
             enemy = Instantiate(enemyGoalPrefab, Vector3.zero, Quaternion.identity);
-            enemy.transform.localScale = new Vector3(sideLength, sideLength / 3f, 1f);  // TODO: where should this be set?
             enemy.transform.parent = gameObject.transform;
             goals.Add(enemy);
         }
@@ -56,7 +57,7 @@ public class Arena : MonoBehaviour
         for (int i = 0; i < numBalls; ++i)
         {
             ball = Instantiate(ballPrefab, Vector3.zero, Quaternion.identity);
-            ball.transform.localScale = new Vector3(0.5f, 0.5f, 1f);    // TODO: where should this be set?
+            ball.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
             ball.velocity = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * 10f;
         }
     }
@@ -126,7 +127,7 @@ public class Arena : MonoBehaviour
             goals.Remove(goal);
             Destroy(goal.transform.gameObject);
 
-            polygon = new Polygon(goals.Count, sideLength);
+            polygon = new Polygon(goals.Count, radius);
             SetGoalTransforms(true);
         }
     }
