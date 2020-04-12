@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Section : MonoBehaviour
+public class Side : MonoBehaviour
 {
     public GameObject leftBound;
     public GameObject rightBound;
@@ -11,7 +9,7 @@ public class Section : MonoBehaviour
 
     private void Awake()
     {
-        originalScale = transform.localScale;   
+        originalScale = transform.localScale;
     }
 
     // TODO: remove
@@ -19,7 +17,7 @@ public class Section : MonoBehaviour
 
     // TODO: remove
     private void Update()
-    { 
+    {
         if (debug)
         {
             Debug.DrawLine(leftBound.transform.position, rightBound.transform.position, Color.cyan);

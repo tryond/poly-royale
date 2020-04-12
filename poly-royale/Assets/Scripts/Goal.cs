@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Goal : Section
+public class Goal : Side
 {
     private Arena arena;
 
@@ -15,6 +13,9 @@ public class Goal : Section
     {
         var ball = collision.GetComponent<Ball>();
         if (ball)
+        {
+            // TODO: reflect ball first
             arena.GoalScored(this, collision.GetComponent<Ball>());
+        }
     }
 }

@@ -113,6 +113,12 @@ public class Arena : MonoBehaviour
         while (transition < 1f)
         {
 
+            if (walls.Count != goals.Count)
+            {
+                Debug.Log("Walls: " + walls.Count);
+                Debug.Log("Goals: " + goals.Count);
+            }
+
             var t = elapsedTime / transitionTime;
             // smooth stop
             transition = Mathf.Clamp(1 - (1 - t) * (1 - t) * (1 - t), 0f, 1f);
@@ -123,7 +129,6 @@ public class Arena : MonoBehaviour
                 leftPos = Vector2.Lerp(startLeftPositions[i], polygon.positions[i], transition);
                 rightPos = Vector2.Lerp(startRightPositions[i], polygon.positions[(i + 1) % goals.Count], transition);
                 goals[i].SetBounds(leftPos, rightPos);
-                
             }
 
             // then set wall positions
@@ -150,13 +155,14 @@ public class Arena : MonoBehaviour
             if (currentTransition != null)
                 StopCoroutine(currentTransition);
 
-            // TODO: this is temporary, should have some effect
-            //balls.Remove(ball);
+            
             Destroy(ball.transform.gameObject);
 
+            // if the wall were associated with the goal, it wouldn't matter...
             goals.Remove(goal);
             Destroy(goal.transform.gameObject);
 
+            // two balls colliding at the same time will destroy another goal...
             var destroyWall = walls[0];
             walls.RemoveAt(0);
             Destroy(destroyWall.transform.gameObject);

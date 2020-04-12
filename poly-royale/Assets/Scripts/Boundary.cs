@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Wall : Side
+public class Boundary : Side
 {
 
     private void OnTriggerEnter2D(Collider2D other)
