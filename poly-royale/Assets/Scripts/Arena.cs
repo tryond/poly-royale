@@ -19,13 +19,10 @@ public class Arena : MonoBehaviour
     [SerializeField] float radius;
     [SerializeField] float ballToSideRatio;
 
-    private Goal playerGoal;
-    [SerializeField] Goal playerGoalPrefab;
-    [SerializeField] Goal enemyGoalPrefab;
-    private List<Goal> goals = new List<Goal>();
-
-    [SerializeField] Wall wallPrefab;
-    private List<Wall> walls = new List<Wall>();
+    private Sector playerSector;
+    [SerializeField] Sector playerSectorPrefab;
+    [SerializeField] Sector enemySectorPrefab;
+    private List<Sector> sectors = new List<Sector>();
 
     [SerializeField] Ball ballPrefab;
     // TODO: add active balls to list
@@ -33,30 +30,33 @@ public class Arena : MonoBehaviour
 
     void Awake()
     {
+        // create polygon from which to find sector positions
         polygon = new Polygon(numPlayers, radius);
 
-        playerGoal = Instantiate(playerGoalPrefab, Vector3.zero, Quaternion.identity);
-        playerGoal.transform.parent = gameObject.transform;
-        goals.Add(playerGoal);
+        // instantiate enemy secors  
+        playerSector = Instantiate(playerSectorPrefab, Vector3.zero, Quaternion.identity);
+        playerSector.transform.parent = gameObject.transform;
+        sectors.Add(playerSector);
 
-        Goal enemy;
+        // instantiate enemy sectors
+        Sector enemySector;
         for (int i = 1; i < numPlayers; ++i)
         {
-            enemy = Instantiate(enemyGoalPrefab, Vector3.zero, Quaternion.identity);
-            enemy.transform.parent = gameObject.transform;
-            goals.Add(enemy);
+            enemySector = Instantiate(enemySectorPrefab, Vector3.zero, Quaternion.identity);
+            enemySector.transform.parent = gameObject.transform;
+            sectors.Add(enemySector);
         }
 
-        for (int i = 0; i < numPlayers; ++i)
-        {
-            walls.Add(Instantiate(wallPrefab, Vector3.zero, Quaternion.identity));
-        }
-
-        SetGoalTransforms();
+        SetSectorsTransform();
     }
 
-    // TODO: needs work...
     void Start()
+    {
+        LaunchBalls(numBalls, true);
+    }
+
+    // TODO: this need much improvement
+    private void LaunchBalls(int numBalls, bool uniform = true)
     {
         Ball ball;
         for (int i = 0; i < numBalls; ++i)
@@ -65,120 +65,104 @@ public class Arena : MonoBehaviour
             //ball.transform.localScale = new Vector3(polygon.GetSideLength() * ballToSideRatio, polygon.GetSideLength() * ballToSideRatio, 1f);
             ball.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
             ball.velocity = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * 10f;
-
             //balls.Add(ball);
         }
     }
 
-    private void SetGoalTransforms(bool lerp = false)
+    private void SetSectorsTransform(bool lerp = false)
     {
+        // move sectors immediately
         if (transitionTime <= 0f || !lerp)
         {
-            for (int i = 0; i < goals.Count; ++i)
+            for (int i = 0; i < sectors.Count; ++i)
             {
-                goals[i].SetBounds(polygon.positions[i], polygon.positions[(i + 1) % polygon.positions.Length]);
-                walls[i].SetBounds(goals[i].rightBound.transform.position, goals[i].rightBound.transform.position);
+                sectors[i].SetSectorPoints(
+                    polygon.positions[i],
+                    polygon.positions[(i + 1) % polygon.positions.Length],
+                    polygon.positions[(i + 1) % polygon.positions.Length]);
             }
         }
+        // lerp sector transforms
         else
         {
-            var startLeftPositions = new Vector2[goals.Count];
-            var startRightPositions = new Vector2[goals.Count];
+            var startLeftPoints = new Vector2[sectors.Count];
+            var startRightPoints = new Vector2[sectors.Count];
+            var startAttachPoints = new Vector2[sectors.Count];
 
-            for (int i = 0; i < goals.Count; ++i)
+            for (int i = 0; i < sectors.Count; ++i)
             {
-                startLeftPositions[i] = goals[i].leftBound.transform.position;
-                startRightPositions[i] = goals[i].rightBound.transform.position;
+                startLeftPoints[i] = sectors[i].LeftPoint;
+                startRightPoints[i] = sectors[i].RightPoint;
+                startAttachPoints[i] = sectors[i].AttachPoint;
 
             }
-            currentTransition = StartCoroutine(TransitionGoals(Time.time, startLeftPositions, startRightPositions));
+            currentTransition = StartCoroutine(TransitionSectors(Time.time, startLeftPoints, startRightPoints, startAttachPoints));
         }
-
-        // TODO: need to lerp this...
-        //for (int i = 0; i < balls.Count; ++i)
-        //{
-        //    //balls[i].transform.localScale = new Vector3(polygon.GetSideLength() * ballToSideRatio, polygon.GetSideLength() * ballToSideRatio, 1f);
-        //    balls[i].transform.localScale = new Vector3(0.5f, 0.5f, 1f);
-        //}
     }
 
-    private IEnumerator TransitionGoals(float startTime, Vector2[] startLeftPositions, Vector2[] startRightPositions)
+    private IEnumerator TransitionSectors(float startTime, Vector2[] startLeftPoints, Vector2[] startRightPoints, Vector2[] startAttachPoints)
     {
         float transition = 0f;
         float elapsedTime = 0f;
 
-        Vector3 leftPos;
-        Vector3 rightPos;
-
         while (transition < 1f)
         {
-
-            if (walls.Count != goals.Count)
-            {
-                Debug.Log("Walls: " + walls.Count);
-                Debug.Log("Goals: " + goals.Count);
-            }
-
             var t = elapsedTime / transitionTime;
             // smooth stop
             transition = Mathf.Clamp(1 - (1 - t) * (1 - t) * (1 - t), 0f, 1f);
 
-            // set goal positions first
-            for (int i = 0; i < goals.Count; ++i)
+            // determine new goal positions first
+            var leftPoints = new Vector2[sectors.Count];
+            var rightPoints = new Vector2[sectors.Count];
+            for (int i = 0; i < sectors.Count; ++i)
             {
-                leftPos = Vector2.Lerp(startLeftPositions[i], polygon.positions[i], transition);
-                rightPos = Vector2.Lerp(startRightPositions[i], polygon.positions[(i + 1) % goals.Count], transition);
-                goals[i].SetBounds(leftPos, rightPos);
+                leftPoints[i] = Vector2.Lerp(startLeftPoints[i], polygon.positions[i], transition);
+                rightPoints[i] = Vector2.Lerp(startRightPoints[i], polygon.positions[(i + 1) % sectors.Count], transition);
             }
 
-            // then set wall positions
-            for (int i = 0; i < walls.Count; ++i)
+            // determine attach points
+            var attachPoints = new Vector2[sectors.Count];
+            for (int i = 0; i < sectors.Count; ++i)
             {
-                walls[i].SetBounds(goals[i].rightBound.transform.position, goals[(i + 1) % goals.Count].leftBound.transform.position);
+                attachPoints[i] = leftPoints[(i + 1) % sectors.Count];
             }
 
+            // set the new positions
+            for (int i = 0; i < sectors.Count; ++i)
+            {
+                sectors[i].SetSectorPoints(leftPoints[i], rightPoints[i], attachPoints[i]);
+            }
+
+            // wait for the end of frame and yield
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
         currentTransition = null;
     }
 
-    public void GoalScored(Goal goal, Ball ball)
+    public void GoalScored(Sector sector, Ball ball)
     {
-        if (goal == playerGoal)
+        if (sector == playerSector)
         {
+            // quit the application
             //UnityEngine.Application.Quit();
+
+            // reset the current scene
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
         else
         {
             if (currentTransition != null)
                 StopCoroutine(currentTransition);
-
             
             Destroy(ball.transform.gameObject);
 
             // if the wall were associated with the goal, it wouldn't matter...
-            goals.Remove(goal);
-            Destroy(goal.transform.gameObject);
+            sectors.Remove(sector);
+            Destroy(sector.transform.gameObject);
 
-            // two balls colliding at the same time will destroy another goal...
-            var destroyWall = walls[0];
-            walls.RemoveAt(0);
-            Destroy(destroyWall.transform.gameObject);
-
-            polygon = new Polygon(goals.Count, radius);
-            SetGoalTransforms(true);
+            polygon = new Polygon(sectors.Count, radius);
+            SetSectorsTransform(true);
         }
     }
-
-
-    private void Update()
-    {
-        for (int i = 0; i < goals.Count; ++i)
-        {
-            Debug.DrawLine(goals[i].rightBound.transform.position, goals[(i + 1) % goals.Count].leftBound.transform.position, Color.yellow);
-        }
-    }
-
 }

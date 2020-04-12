@@ -315,6 +315,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4607401337934428389, guid: ffb142567736b4c188abad619e16aca9,
         type: 3}
+    - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
+        type: 3}
+      propertyPath: enemySectorPrefab
+      value: 
+      objectReference: {fileID: 9133900843207149559, guid: 25073ab5adcaa40fd96a007f038f8115,
+        type: 3}
+    - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
+        type: 3}
+      propertyPath: playerSectorPrefab
+      value: 
+      objectReference: {fileID: 3886646838841586204, guid: 55379833b6f044f9da5c3069dd188fa4,
+        type: 3}
     - target: {fileID: 4823813242015395303, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
       propertyPath: m_Name

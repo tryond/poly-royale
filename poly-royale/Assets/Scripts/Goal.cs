@@ -2,11 +2,11 @@
 
 public class Goal : Side
 {
-    private Arena arena;
+    private Sector sector;
 
     private void Start()
     {
-        arena = GetComponentInParent<Arena>();
+        sector = GetComponentInParent<Sector>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -15,7 +15,7 @@ public class Goal : Side
         if (ball)
         {
             // TODO: reflect ball first
-            arena.GoalScored(this, collision.GetComponent<Ball>());
+            sector.GoalScored(collision.GetComponent<Ball>());
         }
     }
 }
