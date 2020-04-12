@@ -6,8 +6,6 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 
-//[ExecuteInEditMode]
-
 public class Arena : MonoBehaviour
 {
     private Polygon polygon;
@@ -30,7 +28,7 @@ public class Arena : MonoBehaviour
     [SerializeField] Ball ballPrefab;
     private List<Ball> balls = new List<Ball>();
 
-    void Awake()
+    private void Awake()
     {
         // create polygon from which to find sector positions
         polygon = new Polygon(numPlayers, radius);
@@ -52,7 +50,7 @@ public class Arena : MonoBehaviour
         SetSectorsTransform();
     }
 
-    void Start()
+    private void Start()
     {
         LaunchBalls(numBalls, true);
     }
@@ -101,9 +99,9 @@ public class Arena : MonoBehaviour
             for (int i = 0; i < sectors.Count; ++i)
             {
                 sectors[i].SetSectorPoints(
-                    polygon.positions[i],
-                    polygon.positions[(i + 1) % polygon.positions.Length],
-                    polygon.positions[(i + 1) % polygon.positions.Length]);
+                    polygon.Positions[i].left,
+                    polygon.Positions[i].right,
+                    polygon.Positions[i].right);
             }
         }
         // lerp sector transforms
@@ -139,8 +137,8 @@ public class Arena : MonoBehaviour
             var rightPoints = new Vector2[sectors.Count];
             for (int i = 0; i < sectors.Count; ++i)
             {
-                leftPoints[i] = Vector2.Lerp(startLeftPoints[i], polygon.positions[i], transition).normalized * radius;
-                rightPoints[i] = Vector2.Lerp(startRightPoints[i], polygon.positions[(i + 1) % sectors.Count], transition).normalized * radius;
+                leftPoints[i] = Vector2.Lerp(startLeftPoints[i], polygon.Positions[i].left, transition).normalized * radius;
+                rightPoints[i] = Vector2.Lerp(startRightPoints[i], polygon.Positions[i].right, transition).normalized * radius;
             }
 
             // determine attach points
@@ -165,7 +163,7 @@ public class Arena : MonoBehaviour
 
     private void ScaleBalls(bool lerp = false)
     {
-        var newScale = polygon.GetSideLength() * ballToSideRatio;
+        var newScale = polygon.SideLength * ballToSideRatio;
 
         if (balls.Count <= 0)
         {
