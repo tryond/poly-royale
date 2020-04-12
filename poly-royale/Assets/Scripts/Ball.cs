@@ -13,4 +13,10 @@ public class Ball : MonoBehaviour
         var translation = velocity * Time.deltaTime;
         transform.Translate(new Vector3(translation.x, translation.y));
     }
+
+    // TODO: change the behavior here (fade in?)
+    private void OnBecameInvisible()
+    {
+        transform.position = Vector3.zero;
+    }
 }

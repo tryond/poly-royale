@@ -86,8 +86,7 @@ public class Arena : MonoBehaviour
                 ball = Instantiate(ballPrefab, Vector3.zero, Quaternion.identity);
                 balls.Add(ball);
 
-                //ball.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
-                ball.velocity = Random.rotation * baseVector;
+                ball.velocity = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f)) * baseVector;
             }
         }
 
