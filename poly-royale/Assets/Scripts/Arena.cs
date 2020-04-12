@@ -11,7 +11,9 @@ using UnityEngine.SceneManagement;
 public class Arena : MonoBehaviour
 {
     private Polygon polygon;
-    private Coroutine currentTransition = null;
+    private Coroutine currentSectorTransition = null;
+    private Coroutine currentBallTransition = null;
+
     [SerializeField] float transitionTime = 0.5f;
 
     [SerializeField] int numPlayers;
@@ -26,8 +28,7 @@ public class Arena : MonoBehaviour
     private List<Sector> sectors = new List<Sector>();
 
     [SerializeField] Ball ballPrefab;
-    // TODO: add active balls to list
-    //private List<Ball> balls;
+    private List<Ball> balls = new List<Ball>();
 
     void Awake()
     {
@@ -71,7 +72,9 @@ public class Arena : MonoBehaviour
             for (int i = 0; i < numBalls; ++i)
             {
                 ball = Instantiate(ballPrefab, Vector3.zero, Quaternion.identity);
-                ball.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
+                balls.Add(ball);
+
+                //ball.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
                 ball.velocity = Quaternion.Euler(0f, 0f, (theta * i) + Random.Range(-variance, variance)) * baseVector;
             }
         }
@@ -81,10 +84,14 @@ public class Arena : MonoBehaviour
             for (int i = 0; i < numBalls; ++i)
             {
                 ball = Instantiate(ballPrefab, Vector3.zero, Quaternion.identity);
-                ball.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
+                balls.Add(ball);
+
+                //ball.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
                 ball.velocity = Random.rotation * baseVector;
             }
         }
+
+        ScaleBalls(false);
     }
 
     private void SetSectorsTransform(bool lerp = false)
@@ -114,7 +121,7 @@ public class Arena : MonoBehaviour
                 startAttachPoints[i] = sectors[i].AttachPoint;
 
             }
-            currentTransition = StartCoroutine(TransitionSectors(Time.time, startLeftPoints, startRightPoints, startAttachPoints));
+            currentSectorTransition = StartCoroutine(TransitionSectors(Time.time, startLeftPoints, startRightPoints, startAttachPoints));
         }
     }
 
@@ -126,8 +133,7 @@ public class Arena : MonoBehaviour
         while (transition < 1f)
         {
             var t = elapsedTime / transitionTime;
-            // smooth stop
-            transition = Mathf.Clamp(1 - (1 - t) * (1 - t) * (1 - t), 0f, 1f);
+            transition = Mathf.Clamp(1 - (1 - t) * (1 - t) * (1 - t), 0f, 1f);  // smooth stop
 
             // determine new goal positions first
             var leftPoints = new Vector2[sectors.Count];
@@ -155,8 +161,60 @@ public class Arena : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        currentTransition = null;
+        currentSectorTransition = null;
     }
+
+    private void ScaleBalls(bool lerp = false)
+    {
+        var newScale = polygon.GetSideLength() * ballToSideRatio;
+
+        if (balls.Count <= 0)
+        {
+            return;
+        }
+        // scale balls immediately
+        else if (transitionTime <= 0f || !lerp)
+        {
+            foreach (Ball ball in balls)
+            {
+                ball.transform.localScale = Vector3.one * newScale;
+            }
+        }
+        // lerp ball scale
+        else
+        {
+            currentBallTransition = StartCoroutine(TransitionBalls(
+                Time.time,
+                balls[0].transform.localScale,
+                Vector3.one * newScale));
+        }
+    }
+
+    private IEnumerator TransitionBalls(float startTime, Vector3 startScale, Vector3 endScale)
+    {
+        float transition = 0f;
+        float elapsedTime = 0f;
+
+        float t;
+        Vector3 lerpScale;
+
+        while (transition < 1f)
+        {
+            t = elapsedTime / transitionTime;
+            transition = Mathf.Clamp(1 - (1 - t) * (1 - t) * (1 - t), 0f, 1f);  // smooth stop
+
+            // set scale for each ball
+            lerpScale = Vector3.Lerp(startScale, endScale, transition);
+            foreach (Ball ball in balls)
+                ball.transform.localScale = lerpScale;
+
+            // wait for the end of frame and yield
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        currentBallTransition = null;
+    }
+
 
     public void GoalScored(Sector sector, Ball ball)
     {
@@ -170,17 +228,28 @@ public class Arena : MonoBehaviour
         }
         else
         {
-            if (currentTransition != null)
-                StopCoroutine(currentTransition);
-            
+            // stop current sector transition
+            if (currentSectorTransition != null)
+                StopCoroutine(currentSectorTransition);
+
+            // destroy the ball
+            balls.Remove(ball);
             Destroy(ball.transform.gameObject);
 
-            // if the wall were associated with the goal, it wouldn't matter...
+            // destroy the sector
             sectors.Remove(sector);
             Destroy(sector.transform.gameObject);
 
+            // transition sectors
             polygon = new Polygon(sectors.Count, radius);
             SetSectorsTransform(true);
+
+            // stop current ball transition
+            if (currentBallTransition != null)
+                StopCoroutine(currentBallTransition);
+
+            // scale remaining balls
+            ScaleBalls(true);
         }
     }
 }

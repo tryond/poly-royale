@@ -275,7 +275,7 @@ PrefabInstance:
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
       propertyPath: numPlayers
-      value: 24
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
@@ -297,7 +297,7 @@ PrefabInstance:
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
       propertyPath: numBalls
-      value: 40
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
@@ -307,7 +307,7 @@ PrefabInstance:
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
       propertyPath: ballToSideRatio
-      value: 0.5
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
