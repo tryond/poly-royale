@@ -116,8 +116,8 @@ public class Arena : MonoBehaviour
             var rightPoints = new Vector2[sectors.Count];
             for (int i = 0; i < sectors.Count; ++i)
             {
-                leftPoints[i] = Vector2.Lerp(startLeftPoints[i], polygon.positions[i], transition);
-                rightPoints[i] = Vector2.Lerp(startRightPoints[i], polygon.positions[(i + 1) % sectors.Count], transition);
+                leftPoints[i] = Vector2.Lerp(startLeftPoints[i], polygon.positions[i], transition).normalized * radius;
+                rightPoints[i] = Vector2.Lerp(startRightPoints[i], polygon.positions[(i + 1) % sectors.Count], transition).normalized * radius;
             }
 
             // determine attach points
