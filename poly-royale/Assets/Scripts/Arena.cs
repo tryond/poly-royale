@@ -18,6 +18,7 @@ public class Arena : MonoBehaviour
     [SerializeField] int numBalls;
     [SerializeField] float radius;
     [SerializeField] float ballToSideRatio;
+    [SerializeField] float ballSpeed;
 
     private Sector playerSector;
     [SerializeField] Sector playerSectorPrefab;
@@ -55,17 +56,34 @@ public class Arena : MonoBehaviour
         LaunchBalls(numBalls, true);
     }
 
-    // TODO: this need much improvement
     private void LaunchBalls(int numBalls, bool uniform = true)
     {
         Ball ball;
-        for (int i = 0; i < numBalls; ++i)
+        Vector2 baseVector = new Vector2(0f, -1f) * ballSpeed;
+
+        if (uniform)
         {
-            ball = Instantiate(ballPrefab, Vector3.zero, Quaternion.identity);
-            //ball.transform.localScale = new Vector3(polygon.GetSideLength() * ballToSideRatio, polygon.GetSideLength() * ballToSideRatio, 1f);
-            ball.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
-            ball.velocity = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * 10f;
-            //balls.Add(ball);
+            // pick a random starting angle
+            var theta = 360f / numBalls;
+            var variance = theta / 2f;
+
+            // launch balls uniformally around arena
+            for (int i = 0; i < numBalls; ++i)
+            {
+                ball = Instantiate(ballPrefab, Vector3.zero, Quaternion.identity);
+                ball.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
+                ball.velocity = Quaternion.Euler(0f, 0f, (theta * i) + Random.Range(-variance, variance)) * baseVector;
+            }
+        }
+        else
+        {
+            // launch balls in random directions
+            for (int i = 0; i < numBalls; ++i)
+            {
+                ball = Instantiate(ballPrefab, Vector3.zero, Quaternion.identity);
+                ball.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
+                ball.velocity = Random.rotation * baseVector;
+            }
         }
     }
 
