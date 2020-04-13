@@ -7,6 +7,8 @@ public class Paddle : MonoBehaviour
     [SerializeField] [Range(0f, 20f)] protected float speed = 10f;
     [SerializeField] [Range(0f, 90f)] float maxNormalAngle = 45f;
     [SerializeField] [Range(0f, 90f)] float maxReflectionAngle = 60f;
+    [SerializeField] [Range(1f, 2f)] float speedModifier = 1f;
+
 
     private float paddleWidth;
 
@@ -50,7 +52,7 @@ public class Paddle : MonoBehaviour
         if (ball)
         {
             // TODO: clean this up...
-            ball.velocity = GetReflectionVector(ball.velocity).normalized * ball.velocity.magnitude;
+            ball.velocity = GetReflectionVector(ball.velocity).normalized * (ball.velocity.magnitude * speedModifier);
         }
     }
 }

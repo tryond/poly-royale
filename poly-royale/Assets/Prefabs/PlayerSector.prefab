@@ -381,7 +381,7 @@ Transform:
   m_GameObject: {fileID: 6190598603053029053}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.25, z: 1}
+  m_LocalScale: {x: 0.33, y: 0.25, z: 1}
   m_Children: []
   m_Father: {fileID: 6190598601941505025}
   m_RootOrder: 0
@@ -498,6 +498,7 @@ MonoBehaviour:
   speed: 3
   maxNormalAngle: 45
   maxReflectionAngle: 60
+  speedModifier: 1.05
   goal: {fileID: 8285077036350783972}
 --- !u!1 &7240337556255559175
 GameObject:
