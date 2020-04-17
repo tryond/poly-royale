@@ -122,7 +122,7 @@ public class Arena : MonoBehaviour
 
     public void GoalScored(Sector sector, GameObject ball)
     {
-        if (sector == playerSector)
+        if (sector.CompareTag("player"))
         {
             // quit the application
             //UnityEngine.Application.Quit();
