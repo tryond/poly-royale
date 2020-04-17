@@ -157,7 +157,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 0}
+  m_BackGroundColor: {r: 0.23584908, g: 0.23584908, b: 0.23584908, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -204,6 +204,113 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1217955751 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
+    type: 3}
+  m_PrefabInstance: {fileID: 3618997727711688252}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8087a336bd0a8459b8d79945412e3737, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &3618997727711688252
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: numBalls
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: speed
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: speedModifier
+      value: 1.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: boundsRadius
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: ballPrefab
+      value: 
+      objectReference: {fileID: 6073832240189259656, guid: 0e6da6194de2e4b97871c60852cdc359,
+        type: 3}
+    - target: {fileID: 5035123104432092020, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: m_Name
+      value: BallManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849226689931711022, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849226689931711022, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849226689931711022, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849226689931711022, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849226689931711022, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849226689931711022, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849226689931711022, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849226689931711022, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849226689931711022, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849226689931711022, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849226689931711022, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: aa24858ac38534fe5b03c5038b8b206a, type: 3}
 --- !u!1001 &4823813243755935011
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -275,7 +382,7 @@ PrefabInstance:
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
       propertyPath: numPlayers
-      value: 10
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
@@ -292,12 +399,12 @@ PrefabInstance:
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
       propertyPath: transitionTime
-      value: 10
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
       propertyPath: numBalls
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
@@ -307,7 +414,7 @@ PrefabInstance:
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
       propertyPath: ballToSideRatio
-      value: 0.05
+      value: 0.03
       objectReference: {fileID: 0}
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
@@ -332,6 +439,11 @@ PrefabInstance:
       propertyPath: ballSpeed
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
+        type: 3}
+      propertyPath: ballManager
+      value: 
+      objectReference: {fileID: 1217955751}
     - target: {fileID: 4823813242015395303, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
       propertyPath: m_Name

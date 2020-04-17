@@ -26,8 +26,5 @@ public class Sector : MonoBehaviour
         boundary.SetBounds(right, nextGoalLeft);
     }
 
-    public void GoalScored(Ball ball)
-    {
-        arena.GoalScored(this, ball);
-    }
+    public void GoalScored(GameObject ball) => arena.GoalScored(this, ball);
 }

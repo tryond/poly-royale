@@ -8,11 +8,9 @@ public class Goal : Side
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        var ball = collision.GetComponent<Ball>();
-        if (ball)
+        if (collision.gameObject.CompareTag("ball"))
         {
-            // TODO: reflect ball first
-            sector.GoalScored(collision.GetComponent<Ball>());
+            sector.GoalScored(collision.gameObject);
         }
     }
 }

@@ -8,25 +8,19 @@ using UnityEngine.SceneManagement;
 
 public class Arena : MonoBehaviour
 {
-    private Polygon polygon;
-    private Coroutine currentSectorTransition = null;
-    private Coroutine currentBallTransition = null;
-
     [SerializeField] float transitionTime = 0.5f;
-
     [SerializeField] int numPlayers;
-    [SerializeField] int numBalls;
     [SerializeField] float radius;
     [SerializeField] float ballToSideRatio;
-    [SerializeField] float ballSpeed;
-
-    private Sector playerSector;
     [SerializeField] Sector playerSectorPrefab;
     [SerializeField] Sector enemySectorPrefab;
-    private List<Sector> sectors = new List<Sector>();
 
-    [SerializeField] Ball ballPrefab;
-    private List<Ball> balls = new List<Ball>();
+    [SerializeField] private BallManager ballManager;
+
+    private Polygon polygon;
+    private Coroutine currentSectorTransition = null;
+    private Sector playerSector;
+    private List<Sector> sectors = new List<Sector>();
 
     private void Awake()
     {
@@ -52,43 +46,8 @@ public class Arena : MonoBehaviour
 
     private void Start()
     {
-        LaunchBalls(numBalls, true);
-    }
-
-    private void LaunchBalls(int numBalls, bool uniform = true)
-    {
-        Ball ball;
-        Vector2 baseVector = new Vector2(0f, -1f) * ballSpeed;
-
-        if (uniform)
-        {
-            // pick a random starting angle
-            var theta = 360f / numBalls;
-            var variance = theta / 2f;
-
-            // launch balls uniformally around arena
-            for (int i = 0; i < numBalls; ++i)
-            {
-                ball = Instantiate(ballPrefab, Vector3.zero, Quaternion.identity);
-                balls.Add(ball);
-
-                //ball.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
-                ball.velocity = Quaternion.Euler(0f, 0f, (theta * i) + Random.Range(-variance, variance)) * baseVector;
-            }
-        }
-        else
-        {
-            // launch balls in random directions
-            for (int i = 0; i < numBalls; ++i)
-            {
-                ball = Instantiate(ballPrefab, Vector3.zero, Quaternion.identity);
-                balls.Add(ball);
-
-                ball.velocity = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f)) * baseVector;
-            }
-        }
-
-        ScaleBalls(false);
+        // Launch all balls
+        ballManager.LaunchBalls(ballManager.NumBalls, overTime: 0f, random: true);
     }
 
     private void SetSectorsTransform(bool lerp = false)
@@ -161,59 +120,7 @@ public class Arena : MonoBehaviour
         currentSectorTransition = null;
     }
 
-    private void ScaleBalls(bool lerp = false)
-    {
-        var newScale = polygon.SideLength * ballToSideRatio;
-
-        if (balls.Count <= 0)
-        {
-            return;
-        }
-        // scale balls immediately
-        else if (transitionTime <= 0f || !lerp)
-        {
-            foreach (Ball ball in balls)
-            {
-                ball.transform.localScale = Vector3.one * newScale;
-            }
-        }
-        // lerp ball scale
-        else
-        {
-            currentBallTransition = StartCoroutine(TransitionBalls(
-                Time.time,
-                balls[0].transform.localScale,
-                Vector3.one * newScale));
-        }
-    }
-
-    private IEnumerator TransitionBalls(float startTime, Vector3 startScale, Vector3 endScale)
-    {
-        float transition = 0f;
-        float elapsedTime = 0f;
-
-        float t;
-        Vector3 lerpScale;
-
-        while (transition < 1f)
-        {
-            t = elapsedTime / transitionTime;
-            transition = Mathf.Clamp(1 - (1 - t) * (1 - t) * (1 - t), 0f, 1f);  // smooth stop
-
-            // set scale for each ball
-            lerpScale = Vector3.Lerp(startScale, endScale, transition);
-            foreach (Ball ball in balls)
-                ball.transform.localScale = lerpScale;
-
-            // wait for the end of frame and yield
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-        currentBallTransition = null;
-    }
-
-
-    public void GoalScored(Sector sector, Ball ball)
+    public void GoalScored(Sector sector, GameObject ball)
     {
         if (sector == playerSector)
         {
@@ -230,8 +137,7 @@ public class Arena : MonoBehaviour
                 StopCoroutine(currentSectorTransition);
 
             // destroy the ball
-            balls.Remove(ball);
-            Destroy(ball.transform.gameObject);
+            ballManager.Remove(ball);
 
             // destroy the sector
             sectors.Remove(sector);
@@ -241,12 +147,9 @@ public class Arena : MonoBehaviour
             polygon = new Polygon(sectors.Count, radius);
             SetSectorsTransform(true);
 
-            // stop current ball transition
-            if (currentBallTransition != null)
-                StopCoroutine(currentBallTransition);
-
+            // TODO: broken
             // scale remaining balls
-            ScaleBalls(true);
+            //ballManager.ScaleBalls(ballToSideRatio / polygon.SideLength);
         }
     }
 }

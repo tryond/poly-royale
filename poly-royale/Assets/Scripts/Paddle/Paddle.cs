@@ -47,12 +47,10 @@ public class Paddle : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // get padddle normal
-        Ball ball = other.gameObject.GetComponent<Ball>();
-        if (ball)
+        if (other.gameObject.CompareTag("ball"))
         {
-            // TODO: clean this up...
-            ball.velocity = GetReflectionVector(ball.velocity).normalized * (ball.velocity.magnitude * speedModifier);
+            var ball = other.gameObject.GetComponent<Ball>();
+            ball.SetVelocity(GetReflectionVector(ball.velocity).normalized * (ball.velocity.magnitude * ball.speedModifier));
         }
     }
 }

@@ -4,19 +4,12 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-
     public Vector2 velocity;
+    public float speedModifier = 1f;
 
-    // Update is called once per frame
-    void FixedUpdate()
+    public void SetVelocity(Vector2 velocity)
     {
-        var translation = velocity * Time.deltaTime;
-        transform.Translate(new Vector3(translation.x, translation.y));
-    }
+        this.velocity = velocity;
 
-    // TODO: change the behavior here (fade in?)
-    private void OnBecameInvisible()
-    {
-        transform.position = Vector3.zero;
     }
 }
