@@ -50,7 +50,7 @@ public class Paddle : MonoBehaviour
         if (other.gameObject.CompareTag("ball"))
         {
             var ball = other.gameObject.GetComponent<Ball>();
-            ball.SetVelocity(GetReflectionVector(ball.velocity).normalized * (ball.velocity.magnitude * ball.speedModifier));
+            ball.SetVelocity(GetReflectionVector(ball.velocity).normalized * (ball.velocity.magnitude + ball.speedModifier));
         }
     }
 }

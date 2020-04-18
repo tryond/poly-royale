@@ -7,7 +7,7 @@ public class BallManager : MonoBehaviour
     public int NumBalls { get { return numBalls; } }
 
     [SerializeField] private float speed;
-    [SerializeField] [Range(1f, 2f)] private float speedModifier = 1f;
+    [SerializeField] [Range(0f, 1f)] private float speedModifier = 0f;
     [SerializeField] private float boundsRadius;
     [SerializeField] private GameObject ballPrefab;
 

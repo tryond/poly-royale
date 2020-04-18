@@ -226,17 +226,17 @@ PrefabInstance:
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
       propertyPath: numBalls
-      value: 16
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
       propertyPath: speed
-      value: 7
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
       propertyPath: speedModifier
-      value: 1.05
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
@@ -382,7 +382,7 @@ PrefabInstance:
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
       propertyPath: numPlayers
-      value: 16
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
@@ -399,7 +399,7 @@ PrefabInstance:
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
       propertyPath: transitionTime
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
