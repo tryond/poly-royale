@@ -45,11 +45,11 @@ public class Paddle : MonoBehaviour
         Debug.DrawLine(transform.position, transform.position + GetNormalVector() * paddleWidth, Color.red);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other.gameObject.CompareTag("ball"))
+        if (collision.gameObject.CompareTag("ball"))
         {
-            var ball = other.gameObject.GetComponent<Ball>();
+            var ball = collision.gameObject.GetComponent<Ball>();
             ball.SetVelocity(GetReflectionVector(ball.velocity).normalized * (ball.velocity.magnitude + ball.speedModifier));
         }
     }

@@ -25,7 +25,7 @@ public class Arena : MonoBehaviour
     private void Awake()
     {
         // create polygon from which to find sector positions
-        polygon = new Polygon(numPlayers, radius);
+        //polygon = new Polygon(numPlayers, radius);
 
         // instantiate enemy secors  
         playerSector = Instantiate(playerSectorPrefab, Vector3.zero, Quaternion.identity);
@@ -57,10 +57,10 @@ public class Arena : MonoBehaviour
         {
             for (int i = 0; i < sectors.Count; ++i)
             {
-                sectors[i].SetSectorPoints(
-                    polygon.Positions[i].left,
-                    polygon.Positions[i].right,
-                    polygon.Positions[i].right);
+                //    sectors[i].SetSectorPoints(
+                //        polygon.Positions[i].left,
+                //        polygon.Positions[i].right,
+                //        polygon.Positions[i].right);
             }
         }
         // lerp sector transforms
@@ -96,8 +96,8 @@ public class Arena : MonoBehaviour
             var rightPoints = new Vector2[sectors.Count];
             for (int i = 0; i < sectors.Count; ++i)
             {
-                leftPoints[i] = Vector2.Lerp(startLeftPoints[i], polygon.Positions[i].left, transition).normalized * radius;
-                rightPoints[i] = Vector2.Lerp(startRightPoints[i], polygon.Positions[i].right, transition).normalized * radius;
+                //leftPoints[i] = Vector2.Lerp(startLeftPoints[i], polygon.Positions[i].left, transition).normalized * radius;
+                //rightPoints[i] = Vector2.Lerp(startRightPoints[i], polygon.Positions[i].right, transition).normalized * radius;
             }
 
             // determine attach points
@@ -144,7 +144,7 @@ public class Arena : MonoBehaviour
             Destroy(sector.transform.gameObject);
 
             // transition sectors
-            polygon = new Polygon(sectors.Count, radius);
+            //polygon = new Polygon(sectors.Count, radius);
             SetSectorsTransform(true);
 
             // TODO: broken
