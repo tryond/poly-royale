@@ -1,33 +1,40 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class SideManager : MonoBehaviour
 {
+    public static SideManager current;
+
     [Tooltip("number of sides to start with")] public int numSides = 0;
     [Tooltip("radius of polygon formed by sides")] public float radius;
     [Tooltip("time to transition between side layouts")] public float transitionTime;
 
     private Vector3[] points;
-    private List<Vector3C> polygonPoints;
-    private Vector3C[] pointTargets;
+    private List<Target> polygonPoints;
+    private Target[] pointTargets;
     //private (Vector3, Vector3)[] sides;
     private bool[] sideCollapsed;
     private int numActiveSides;
     private Coroutine currentTransition = null;
 
+    public event Action PositionChangeEvent;
+    public void PositionChange() => PositionChangeEvent?.Invoke();
+
+    private class Target { public Vector3 position; }
+
     // TODO: this isn't very performant...
-    private (Vector3, Vector3)[] Sides { get {
+    public (Vector3, Vector3)[] Sides { get {
             var sides = new (Vector3, Vector3)[numSides];
             for (int i = 0; i < numSides; ++i)
                 sides[i] = (points[i], points[(i + 1) % numSides]);
             return sides;
         } }
 
-    private class Vector3C
+    private void Awake()
     {
-        public Vector3 vector3;
+        current = this;
     }
 
     private void Start()
@@ -42,12 +49,12 @@ public class SideManager : MonoBehaviour
             points[i] = new Vector3();
 
         // find n-sided, regular polygon points
-        polygonPoints = new List<Vector3C>();
+        polygonPoints = new List<Target>();
         foreach (Vector3 point in Polygon.Points(numActiveSides, radius))
-            polygonPoints.Add(new Vector3C { vector3 = point });
+            polygonPoints.Add(new Target { position = point });
 
         // set point targets to reference polygon points
-        pointTargets = new Vector3C[numSides];
+        pointTargets = new Target[numSides];
         for (int i = 0; i < numSides; ++i)
             pointTargets[i] = polygonPoints[i];
 
@@ -58,39 +65,32 @@ public class SideManager : MonoBehaviour
     // TODO: debug
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            var randomSide = Random.Range(0, numSides);
-            while (sideCollapsed[randomSide])
-            {
-                randomSide = Random.Range(0, numSides);
-            }
-            Debug.Log("Collapsing side " + randomSide);
-            CollapseSide(randomSide);
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    var randomSide = UnityEngine.Random.Range(0, numSides);
+        //    while (sideCollapsed[randomSide])
+        //    {
+        //        randomSide = UnityEngine.Random.Range(0, numSides);
+        //    }
+        //    CollapseSide(randomSide);
+        //}
         DrawSides();
     }
 
     // TODO: debug
     private void DrawSides()
     {
-        foreach (var side in Sides)
+        var sides = Sides;
+        for (int i = 0; i < numSides; ++i)
         {
-            Debug.DrawLine(side.Item1, side.Item2);
+            var sideColor = sideCollapsed[i] ? Color.red : Color.green;
+            Debug.DrawLine(sides[i].Item1, sides[i].Item2, sideColor);
+            Debug.DrawLine(sides[i].Item1, transform.position, Color.gray);
         }
+
     }
 
-    private void OnDrawGizmos()
-    {
-        for (int i = 0; i < numSides; i++)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(points[i], 0.5f);
-            Handles.Label(points[i], "" + i);
-        }
-    }
-
-    private void CollapseSide(int sideID)
+    public void CollapseSide(int sideID)
     {
         // check if already collapsed
         if (sideCollapsed[sideID]) return;
@@ -99,41 +99,25 @@ public class SideManager : MonoBehaviour
 
         // remove target that right point references
         var rightTargetIndex = (sideID + 1) % pointTargets.Length;
-
-        // TODO: debug
-        Debug.Log("Before removal: " + polygonPoints.Count);
-
         var pointToRemove = pointTargets[rightTargetIndex];
 
+        // update all targets to point to correct point
         pointTargets[rightTargetIndex] = pointTargets[sideID];
         for (int i = 1; i < pointTargets.Length; i++)
         {
-            if (pointTargets[(rightTargetIndex + i) % pointTargets.Length] == pointToRemove)
-            {
-                pointTargets[(rightTargetIndex + i) % pointTargets.Length] = pointTargets[sideID];
-            }
-            else
-            {
+            var nextTarget = (rightTargetIndex + i) % pointTargets.Length;
+            if (pointTargets[nextTarget] != pointToRemove)
                 break;
-            }
+
+            pointTargets[nextTarget] = pointTargets[sideID];
         }
         polygonPoints.Remove(pointToRemove);
-
-        // TODO: debug
-        Debug.Log("After removal: " + polygonPoints.Count);
-
-        // set right target to point at left target
-        
 
         // update polygon point values
         var nextPolygonPoints = Polygon.Points(numActiveSides, radius);
 
-        // TODO: debug
-        Debug.Log("polygonPoints.Count: " + polygonPoints.Count);
-        Debug.Log("nextPolygonPoints.Length: " + nextPolygonPoints.Length);
-
         for (int i = 0; i < polygonPoints.Count; ++i)
-            polygonPoints[i].vector3 = nextPolygonPoints[i];    // TODO: does this work?
+            polygonPoints[i].position = nextPolygonPoints[i];
 
         // transition over time
         TransitionPoints(overTime: transitionTime);
@@ -156,11 +140,15 @@ public class SideManager : MonoBehaviour
         while (transition < 1f)
         {
             t = overTime > 0f ? elapsedTime / overTime : 1f;
-            transition = Mathf.Clamp(1 - (1 - t) * (1 - t) * (1 - t), 0f, 1f);  // smooth stop
+            transition = Mathf.Clamp(1 - (1 - t) * (1 - t) * (1 - t), 0f, 1f);  // ease out
+            //transition = Mathf.Clamp(t * t * t, 0f, 1f);  // ease in
 
             // find new position
             for (int i = 0; i < points.Length; ++i)
-                points[i] = Vector3.Lerp(startPositions[i], pointTargets[i].vector3, transition).normalized * radius;
+                points[i] = Vector3.Lerp(startPositions[i], pointTargets[i].position, transition).normalized * radius;
+
+            // notify listeners
+            PositionChange();
 
             // wait for the end of frame and yield
             elapsedTime += Time.deltaTime;

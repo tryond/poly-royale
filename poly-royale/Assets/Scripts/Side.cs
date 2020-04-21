@@ -12,17 +12,17 @@ public class Side : MonoBehaviour
         originalScale = transform.localScale;
     }
 
-    // TODO: remove
-    public bool debug = false;
+    //// TODO: remove
+    //public bool debug = false;
 
-    // TODO: remove
-    private void Update()
-    {
-        if (debug)
-        {
-            Debug.DrawLine(leftBound.transform.position, rightBound.transform.position, Color.cyan);
-        }
-    }
+    //// TODO: remove
+    //private void Update()
+    //{
+    //    if (debug)
+    //    {
+    //        Debug.DrawLine(leftBound.transform.position, rightBound.transform.position, Color.cyan);
+    //    }
+    //}
 
     public void SetLeftBound(Vector2 position)
     {
