@@ -24,14 +24,6 @@ public class SideManager : MonoBehaviour
 
     private class Target { public Vector3 position; }
 
-    // TODO: this isn't very performant...
-    public (Vector3, Vector3)[] Sides { get {
-            var sides = new (Vector3, Vector3)[numSides];
-            for (int i = 0; i < numSides; ++i)
-                sides[i] = (points[i], points[(i + 1) % numSides]);
-            return sides;
-        } }
-
     private void Awake()
     {
         current = this;
@@ -45,7 +37,7 @@ public class SideManager : MonoBehaviour
 
         // set each point to the origin
         points = new Vector3[numSides];
-        for (int i = 0; i > numSides; ++i)
+        for (int i = 0; i < numSides; ++i)
             points[i] = new Vector3();
 
         // find n-sided, regular polygon points
@@ -77,10 +69,19 @@ public class SideManager : MonoBehaviour
         DrawSides();
     }
 
+    // TODO: this isn't very performant...
+    public (Vector3, Vector3)[] GetSides()
+    {
+        var sides = new (Vector3, Vector3)[numSides];
+        for (int i = 0; i < numSides; ++i)
+            sides[i] = (points[i], points[(i + 1) % numSides]);
+        return sides;
+    }
+
     // TODO: debug
     private void DrawSides()
     {
-        var sides = Sides;
+        var sides = GetSides();
         for (int i = 0; i < numSides; ++i)
         {
             var sideColor = sideCollapsed[i] ? Color.red : Color.green;

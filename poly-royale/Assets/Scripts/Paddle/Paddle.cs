@@ -9,7 +9,6 @@ public class Paddle : MonoBehaviour
     [SerializeField] [Range(0f, 90f)] float maxReflectionAngle = 60f;
     [SerializeField] [Range(1f, 2f)] float speedModifier = 1f;
 
-
     private float paddleWidth;
 
     protected float leftBound;
@@ -17,11 +16,11 @@ public class Paddle : MonoBehaviour
 
     protected float movement; // between -1 and 1
 
-    [SerializeField] Goal goal;
-
-    private void Awake()
+    protected virtual void Start()
     {
         paddleWidth = transform.GetComponent<SpriteRenderer>().bounds.extents.x;
+
+        var goal = transform.parent.GetComponent<Goal>();
         leftBound = goal.leftBound.transform.localPosition.x + (paddleWidth / transform.parent.localScale.x);
         rightBound = goal.rightBound.transform.localPosition.x - (paddleWidth / transform.parent.localScale.x);
     }
@@ -47,7 +46,7 @@ public class Paddle : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("ball"))
+        if (collision.gameObject.CompareTag("Ball"))
         {
             var ball = collision.gameObject.GetComponent<Ball>();
             ball.SetVelocity(GetReflectionVector(ball.velocity).normalized * (ball.velocity.magnitude + ball.speedModifier));

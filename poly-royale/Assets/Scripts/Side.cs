@@ -45,7 +45,8 @@ public class Side : MonoBehaviour
 
         // set scale
         var newDistance = Vector2.Distance(rightPosition, leftPosition);
-        transform.localScale = originalScale * (newDistance / originalScale.x);
+        //transform.localScale = originalScale * (newDistance / originalScale.x);
+        transform.localScale = new Vector3(originalScale.x * (newDistance / originalScale.x), originalScale.y, originalScale.z);
 
         // set bound positions
         leftBound.transform.position = leftPosition;

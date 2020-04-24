@@ -7,11 +7,13 @@ public class GoalManager : MonoBehaviour
     public static GoalManager current;
 
     [SerializeField] private int numPlayers;
-    [SerializeField] private GameObject goalPrefab;
-    [SerializeField] private GameObject playerPaddlePrefab;
-    [SerializeField] private GameObject enemyPaddlePrefab;
+    [SerializeField] private GameObject playerGoalPrefab;
+    [SerializeField] private GameObject enemyGoalPrefab;
+
+    private GameObject playerGoal;
 
     private GameObject[] goals;
+    private bool[] goalEliminated;
 
     public event Action<GameObject> GoalEliminatedEvent;
     public void OnGoalEliminated(GameObject goal) => GoalEliminatedEvent?.Invoke(goal);
@@ -24,18 +26,28 @@ public class GoalManager : MonoBehaviour
         // set singleton object
         current = this;
 
-        // instantiate all goals
+        // create player goal if set in editor
         goals = new GameObject[numPlayers];
-        for (int i = 0; i < numPlayers; ++i)
+
+        if (playerGoalPrefab != null)
         {
-            goals[i] = Instantiate(goalPrefab);
-            goals[i].GetComponent<Goal>().id = i;
+            playerGoal = Instantiate(playerGoalPrefab);
+            goals[0] = playerGoal;
+        }
+        else
+        {
+            playerGoal = null;
+            goals[0] = Instantiate(enemyGoalPrefab);
         }
 
-        // set player paddle if one passed in
-        goals[0].GetComponent<Goal>().Paddle = Instantiate(playerPaddlePrefab == null ? enemyPaddlePrefab : playerPaddlePrefab);
-        foreach (var goal in goals)
-            goal.GetComponent<Goal>().Paddle = Instantiate(enemyPaddlePrefab);
+        goalEliminated = new bool[numPlayers];
+
+        // create enemy goals
+        for (int i = 1; i < numPlayers; ++i)
+        {
+            goals[i] = Instantiate(enemyGoalPrefab);
+            goals[i].GetComponent<Goal>().id = i;
+        }
 
         // listen to all goals
         foreach (var goal in goals)
@@ -48,8 +60,10 @@ public class GoalManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             var randomGoal = UnityEngine.Random.Range(0, numPlayers);
-            OnGoalEliminated(goals[randomGoal]);
-            
+            while (goalEliminated[randomGoal])
+                randomGoal = UnityEngine.Random.Range(0, numPlayers);
+
+            GoalScored(goals[randomGoal], null);
         }
     }
 
@@ -63,7 +77,7 @@ public class GoalManager : MonoBehaviour
 
     public void GoalScored(GameObject goal, GameObject ball)
     {
-        if (goal.GetComponent<Goal>().Paddle.CompareTag("Player"))
+        if (goal.GetComponent<Goal>().CompareTag("Player"))
         {
             // quit the application
             //UnityEngine.Application.Quit();
@@ -79,7 +93,14 @@ public class GoalManager : MonoBehaviour
             OnGoalEliminated(goal);
         }
 
+        goalEliminated[goal.GetComponent<Goal>().id] = true;
+
         // notify listeners
         OnBallScored(ball);
+    }
+
+    public GameObject GetPlayerGoal()
+    {
+        return playerGoal;
     }
 }

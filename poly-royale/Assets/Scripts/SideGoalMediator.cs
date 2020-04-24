@@ -17,11 +17,14 @@ public class SideGoalMediator : MonoBehaviour
 
         // listen to goals
         GoalManager.current.GoalEliminatedEvent += OnGoalEliminated;
+
+        // set inital goal positions
+        GoalManager.current.SetGoalPositions(SideManager.current.GetSides());
     }
 
     private void OnPositionChange()
     {
-        GoalManager.current.SetGoalPositions(SideManager.current.Sides);
+        GoalManager.current.SetGoalPositions(SideManager.current.GetSides());
     }
 
     private void OnGoalEliminated(GameObject goal)

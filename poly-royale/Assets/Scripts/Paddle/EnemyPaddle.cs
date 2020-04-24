@@ -6,10 +6,11 @@ using UnityEngine;
 
 public class EnemyPaddle : Paddle
 {
-
-    private void Start()
+    
+    protected override void Start()
     {
         movement = 1f;
+        base.Start();
     }
 
     void FixedUpdate()
@@ -22,7 +23,6 @@ public class EnemyPaddle : Paddle
         if (newX == leftBound || newX == rightBound)
             movement *= -1;
 
-        // TODO: debug
-        //DrawNormals();
+        DrawNormals();
     }
 }

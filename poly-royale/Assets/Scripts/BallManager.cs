@@ -17,6 +17,8 @@ public class BallManager : MonoBehaviour
 
     private void Start()
     {
+        GoalManager.current.BallScoredEvent += BallScored;
+
         // instantiate and store deactivated balls
         balls = new GameObject[numBalls];
         for (int i = 0; i < numBalls; i++)
@@ -25,9 +27,11 @@ public class BallManager : MonoBehaviour
             balls[i].GetComponent<Ball>().speedModifier = speedModifier;
             balls[i].SetActive(false);
         }
+
+        LaunchBalls(numBalls, random: true);
     }
 
-    void Update()
+    void FixedUpdate()
     {
         // move each ball
         foreach(GameObject ball in balls)
@@ -138,5 +142,10 @@ public class BallManager : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         currentScale = null;
+    }
+
+    private void BallScored(GameObject ball)
+    {
+        ball.GetComponent<Ball>().gameObject.SetActive(false);
     }
 }
