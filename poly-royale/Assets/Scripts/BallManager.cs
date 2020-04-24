@@ -25,6 +25,8 @@ public class BallManager : MonoBehaviour
             balls[i].GetComponent<Ball>().speedModifier = speedModifier;
             balls[i].SetActive(false);
         }
+
+        LaunchBalls(numBalls);
     }
 
     void Update()
@@ -70,10 +72,10 @@ public class BallManager : MonoBehaviour
             yield return new WaitForEndOfFrame();
 
         var ballsLaunched = 0;
-        var timeBetweenLaunches = overTime > 0f ? num / overTime : 0f;
+        var timeBetweenLaunches = overTime > 0f ?overTime / num : 0f;
 
         float angle = Random.Range(0f, 360f);
-        float uniformAngle = num / 360f;
+        float uniformAngle = 360f / num;
 
         for (int i = 0; i < numBalls; ++i)
         {
