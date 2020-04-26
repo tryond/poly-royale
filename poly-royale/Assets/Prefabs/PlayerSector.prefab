@@ -190,7 +190,7 @@ GameObject:
   - component: {fileID: 3886646838841586204}
   m_Layer: 0
   m_Name: PlayerSector
-  m_TagString: player
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -223,7 +223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 347f6b37ff3374785b2ec26ad1d52e7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  goal: {fileID: 8285077036350783972}
+  goal: {fileID: 8145103341740118904, guid: 487b3f7a05f714cafa555e8f19a65312, type: 3}
   boundary: {fileID: 5051422686350028997}
 --- !u!1 &6190598601941505026
 GameObject:

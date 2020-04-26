@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
+using UnityEngine.WSA;
 
 public class Arena : MonoBehaviour
 {
@@ -12,117 +13,95 @@ public class Arena : MonoBehaviour
     [SerializeField] int numPlayers;
     [SerializeField] float radius;
     [SerializeField] float ballToSideRatio;
-    [SerializeField] Sector playerSectorPrefab;
-    [SerializeField] Sector enemySectorPrefab;
+    
+    [SerializeField] private Goal playerGoalPrefab;
+    [SerializeField] private Goal enemyGoalPrefab;
 
+    [SerializeField] private Boundary boundaryPrefab;
+    private List<Boundary> boundaries;
+    
+    private Goal playerGoal;
+    private List<Goal> goals = new List<Goal>();
+    
     [SerializeField] private BallManager ballManager;
 
     private Polygon polygon;
-    private Coroutine currentSectorTransition = null;
-    private Sector playerSector;
-    private List<Sector> sectors = new List<Sector>();
-
-    private void Awake()
-    {
-        // create polygon from which to find sector positions
-        polygon = new Polygon(numPlayers, radius);
-
-        // instantiate enemy secors  
-        playerSector = Instantiate(playerSectorPrefab, Vector3.zero, Quaternion.identity);
-        playerSector.transform.parent = gameObject.transform;
-        sectors.Add(playerSector);
-
-        // instantiate enemy sectors
-        Sector enemySector;
-        for (int i = 1; i < numPlayers; ++i)
-        {
-            enemySector = Instantiate(enemySectorPrefab, Vector3.zero, Quaternion.identity);
-            enemySector.transform.parent = gameObject.transform;
-            sectors.Add(enemySector);
-        }
-
-        SetSectorsTransform();
-    }
+    private Coroutine currentGoalTransition = null;
 
     private void Start()
     {
-        // Launch all balls
-        ballManager.LaunchBalls(ballManager.NumBalls, overTime: 0f, random: true);
+        // create polygon from which to find sector positions
+        polygon = new Polygon(numPlayers, radius);
+        
+        // create goals
+        goals = new List<Goal>();
+        
+        // add player (if defined) and enemy goals
+        goals.Add(Instantiate(playerGoalPrefab != null ? playerGoalPrefab : enemyGoalPrefab));
+        for (int i = 1; i < numPlayers; i++)
+            goals.Add(Instantiate(enemyGoalPrefab));
+
+        // listen to all goals
+        foreach (Goal goal in goals)
+            goal.OnGoalScored += GoalScored;
+        
+        // create boundaries
+        boundaries = new List<Boundary>();
+        for (int i = 0; i < numPlayers; i++)
+            boundaries.Add(Instantiate(boundaryPrefab));
+        
+        // set goal positions
+        SetGoalPositions(overTime: 0f);
     }
 
-    private void SetSectorsTransform(bool lerp = false)
+    private void SetGoalPositions(float overTime = 0f)
     {
-        // move sectors immediately
-        if (transitionTime <= 0f || !lerp)
-        {
-            for (int i = 0; i < sectors.Count; ++i)
-            {
-                sectors[i].SetSectorPoints(
-                    polygon.Positions[i].left,
-                    polygon.Positions[i].right,
-                    polygon.Positions[i].right);
-            }
-        }
-        // lerp sector transforms
-        else
-        {
-            var startLeftPoints = new Vector2[sectors.Count];
-            var startRightPoints = new Vector2[sectors.Count];
-            var startAttachPoints = new Vector2[sectors.Count];
+        if (currentGoalTransition != null)
+            StopCoroutine(currentGoalTransition);
 
-            for (int i = 0; i < sectors.Count; ++i)
-            {
-                startLeftPoints[i] = sectors[i].LeftPoint;
-                startRightPoints[i] = sectors[i].RightPoint;
-                startAttachPoints[i] = sectors[i].AttachPoint;
-
-            }
-            currentSectorTransition = StartCoroutine(TransitionSectors(Time.time, startLeftPoints, startRightPoints, startAttachPoints));
-        }
+        currentGoalTransition = StartCoroutine(TransitionGoals(overTime));
     }
 
-    private IEnumerator TransitionSectors(float startTime, Vector2[] startLeftPoints, Vector2[] startRightPoints, Vector2[] startAttachPoints)
+    private IEnumerator TransitionGoals(float overTime = 0f)
     {
+        (Vector3 left, Vector3 right)[] startPositions = new (Vector3, Vector3)[goals.Count];
+        for (int i = 0; i < goals.Count; i++)
+            startPositions[i] = (goals[i].leftBound.transform.position, goals[i].rightBound.transform.position);
+
         float transition = 0f;
         float elapsedTime = 0f;
 
         while (transition < 1f)
         {
-            var t = elapsedTime / transitionTime;
+            var t = overTime > 0f ? elapsedTime / overTime : 1f;
             transition = Mathf.Clamp(1 - (1 - t) * (1 - t) * (1 - t), 0f, 1f);  // smooth stop
-
+            
             // determine new goal positions first
-            var leftPoints = new Vector2[sectors.Count];
-            var rightPoints = new Vector2[sectors.Count];
-            for (int i = 0; i < sectors.Count; ++i)
+            for (int i = 0; i < goals.Count; ++i)
             {
-                leftPoints[i] = Vector2.Lerp(startLeftPoints[i], polygon.Positions[i].left, transition).normalized * radius;
-                rightPoints[i] = Vector2.Lerp(startRightPoints[i], polygon.Positions[i].right, transition).normalized * radius;
+                var leftPoint = Vector3.Lerp(startPositions[i].left, polygon.Positions[i].left, transition).normalized * radius;
+                var rightPoint = Vector3.Lerp(startPositions[i].right, polygon.Positions[i].right, transition).normalized * radius;
+                goals[i].SetBounds(leftPoint, rightPoint);
             }
-
-            // determine attach points
-            var attachPoints = new Vector2[sectors.Count];
-            for (int i = 0; i < sectors.Count; ++i)
+            
+            // set boundaries
+            for (int i = 0; i < boundaries.Count; i++)
             {
-                attachPoints[i] = leftPoints[(i + 1) % sectors.Count];
-            }
-
-            // set the new positions
-            for (int i = 0; i < sectors.Count; ++i)
-            {
-                sectors[i].SetSectorPoints(leftPoints[i], rightPoints[i], attachPoints[i]);
+                boundaries[i].SetBounds(
+                    goals[i % goals.Count].rightBound.transform.position,
+                    goals[(i + 1) % goals.Count].leftBound.transform.position);
             }
 
             // wait for the end of frame and yield
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        currentSectorTransition = null;
+        currentGoalTransition = null;
     }
 
-    public void GoalScored(Sector sector, GameObject ball)
+    public void GoalScored(GameObject goal, GameObject ball)
     {
-        if (sector.CompareTag("player"))
+        if (goal.CompareTag("Player"))
         {
             // quit the application
             //UnityEngine.Application.Quit();
@@ -133,23 +112,29 @@ public class Arena : MonoBehaviour
         else
         {
             // stop current sector transition
-            if (currentSectorTransition != null)
-                StopCoroutine(currentSectorTransition);
+            if (currentGoalTransition != null)
+                StopCoroutine(currentGoalTransition);
 
             // destroy the ball
             ballManager.Remove(ball);
 
             // destroy the sector
-            sectors.Remove(sector);
-            Destroy(sector.transform.gameObject);
-
+            if (goals.Remove(goal.GetComponent<Goal>()))
+            {
+                Destroy(goal.gameObject);
+                
+                var boundary = boundaries[0];
+                boundaries.RemoveAt(0);
+                Destroy(boundary.gameObject);
+            }
+            
+            // reset if only one player remaining
+            if (goals.Count <= 1)
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            
             // transition sectors
-            polygon = new Polygon(sectors.Count, radius);
-            SetSectorsTransform(true);
-
-            // TODO: broken
-            // scale remaining balls
-            //ballManager.ScaleBalls(ballToSideRatio / polygon.SideLength);
+            polygon = new Polygon(goals.Count, radius);
+            SetGoalPositions(overTime: transitionTime);
         }
     }
 }

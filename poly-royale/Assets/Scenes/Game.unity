@@ -121,6 +121,35 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &4746845 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4823813242015395303, guid: 5d5412fb706314e768e540c5ece361b6,
+    type: 3}
+  m_PrefabInstance: {fileID: 4823813243755935011}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4746846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4746845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 542385cebbb4f4eeabb9e9f67b34c3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transitionTime: 3
+  numPlayers: 8
+  radius: 15
+  ballToSideRatio: 0.1
+  playerGoalPrefab: {fileID: 8145103341740118904, guid: 487b3f7a05f714cafa555e8f19a65312,
+    type: 3}
+  enemyGoalPrefab: {fileID: 8398790626649020725, guid: e218d06f87c4a4a72939335457f46032,
+    type: 3}
+  boundaryPrefab: {fileID: 6642951431126140977, guid: 33fccd029bba6458aafba989d91427a4,
+    type: 3}
+  ballManager: {fileID: 1217955751}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,7 +255,7 @@ PrefabInstance:
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
       propertyPath: numBalls
-      value: 32
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
@@ -241,13 +270,13 @@ PrefabInstance:
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
       propertyPath: boundsRadius
-      value: 15
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
       propertyPath: ballPrefab
       value: 
-      objectReference: {fileID: 6073832240189259656, guid: 0e6da6194de2e4b97871c60852cdc359,
+      objectReference: {fileID: 6490238597174799159, guid: 0e6da6194de2e4b97871c60852cdc359,
         type: 3}
     - target: {fileID: 5035123104432092020, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
@@ -382,7 +411,7 @@ PrefabInstance:
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
       propertyPath: numPlayers
-      value: 32
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
@@ -444,6 +473,11 @@ PrefabInstance:
       propertyPath: ballManager
       value: 
       objectReference: {fileID: 1217955751}
+    - target: {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4823813242015395303, guid: 5d5412fb706314e768e540c5ece361b6,
         type: 3}
       propertyPath: m_Name
@@ -454,5 +488,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4823813242015395302, guid: 5d5412fb706314e768e540c5ece361b6, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 5d5412fb706314e768e540c5ece361b6, type: 3}

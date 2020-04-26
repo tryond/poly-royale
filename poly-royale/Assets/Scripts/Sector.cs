@@ -19,6 +19,8 @@ public class Sector : MonoBehaviour
     // TODO: clean up the names here
     public void SetSectorPoints(Vector2 left, Vector2 right, Vector2 nextGoalLeft)
     {
+        print("Set sector points");
+        
         // set the goal coordinates
         goal.SetBounds(left, right);
 
@@ -26,5 +28,5 @@ public class Sector : MonoBehaviour
         boundary.SetBounds(right, nextGoalLeft);
     }
 
-    public void GoalScored(GameObject ball) => arena.GoalScored(this, ball);
+    // public void GoalScored(GameObject ball) => arena.GoalScored(this, ball);
 }

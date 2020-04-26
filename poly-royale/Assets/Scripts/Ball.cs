@@ -1,15 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    public Vector2 velocity;
+    public float speed;
     public float speedModifier = 1f;
-
-    public void SetVelocity(Vector2 velocity)
+  
+    public void SetVelocity(float magnitude, Vector3 direction)
     {
-        this.velocity = velocity;
+        speed = magnitude;
+        gameObject.transform.up = direction.normalized;
+    }
 
+    private void FixedUpdate()
+    {
+        transform.position += speed * Time.fixedDeltaTime * transform.up;   
     }
 }

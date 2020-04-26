@@ -4,8 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - ball
-  - player
+  - BallGoalCollider
+  - Ball
   layers:
   - Default
   - TransparentFX

@@ -5,11 +5,15 @@ public class Boundary : Side
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // get padddle normal
-        Ball ball = other.gameObject.GetComponent<Ball>();
-        if (ball)
+        if (other.CompareTag("Ball"))
         {
-            ball.velocity = Vector3.Reflect(ball.velocity, transform.up);
+            var ball = other.GetComponent<Ball>();
+            ball.SetVelocity(ball.speed, Vector3.Reflect(other.transform.up, transform.up));
         }
+    }
+
+    private void Update()
+    {
+        Debug.DrawLine(leftBound.transform.position, rightBound.transform.position, Color.yellow);
     }
 }

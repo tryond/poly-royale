@@ -79,7 +79,7 @@ public class TestPaddle : MonoBehaviour
         if (ball)
         {
             // TODO: clean this up...
-            ball.velocity = GetReflectionVector(ball.velocity).normalized * ball.velocity.magnitude;
+            //ball.velocity = GetReflectionVector(ball.velocity).normalized * ball.velocity.magnitude;
         }
     }
 }

@@ -1,14 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Paddle : MonoBehaviour
+public abstract class Paddle : MonoBehaviour
 {
     [SerializeField] [Range(0f, 20f)] protected float speed = 10f;
     [SerializeField] [Range(0f, 90f)] float maxNormalAngle = 45f;
     [SerializeField] [Range(0f, 90f)] float maxReflectionAngle = 60f;
     [SerializeField] [Range(1f, 2f)] float speedModifier = 1f;
-
 
     private float paddleWidth;
 
@@ -19,6 +19,9 @@ public class Paddle : MonoBehaviour
 
     [SerializeField] Goal goal;
 
+    public event Action OnBallHit;
+    public event Action OnBoundHit;
+    
     private void Awake()
     {
         paddleWidth = transform.GetComponent<SpriteRenderer>().bounds.extents.x;
@@ -26,12 +29,28 @@ public class Paddle : MonoBehaviour
         rightBound = goal.rightBound.transform.localPosition.x - (paddleWidth / transform.parent.localScale.x);
     }
 
+    void FixedUpdate()
+    {
+        var translation = movement * speed * Time.deltaTime;
+        var newX = Mathf.Clamp(transform.localPosition.x + translation, leftBound, rightBound);
+
+        if (newX == leftBound || newX == rightBound)
+        {
+            movement = 0f;
+            
+            // notify listeners
+            OnBoundHit?.Invoke();
+        }
+        
+        transform.localPosition = new Vector3(newX, 0f, 0f);
+    }
+    
     public Vector3 GetNormalVector()
     {
         return Quaternion.Euler(0f, 0f, -maxNormalAngle * movement) * transform.up;
     }
 
-    public Vector3 GetReflectionVector(Vector2 direction)
+    public Vector3 GetReflectionVector(Vector3 direction)
     {
         Vector3 rawReflection = Vector3.Reflect(direction, GetNormalVector());
         var difference = Vector3.SignedAngle(rawReflection, transform.up, transform.forward);
@@ -47,10 +66,13 @@ public class Paddle : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("ball"))
+        if (other.gameObject.CompareTag("Ball"))
         {
             var ball = other.gameObject.GetComponent<Ball>();
-            ball.SetVelocity(GetReflectionVector(ball.velocity).normalized * (ball.velocity.magnitude + ball.speedModifier));
+            ball.SetVelocity(ball.speed + ball.speedModifier, GetReflectionVector(ball.transform.up).normalized);
+            
+            // notify listeners
+            OnBallHit?.Invoke();
         }
     }
 }

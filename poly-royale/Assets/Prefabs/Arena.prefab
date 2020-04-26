@@ -43,10 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 542385cebbb4f4eeabb9e9f67b34c3f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transitionSpeed: 1
+  transitionTime: 0.5
   numPlayers: 5
-  numBalls: 0
-  sideLength: 5
-  playerGoalPrefab: {fileID: 0}
-  enemyGoalPrefab: {fileID: 0}
-  ballPrefab: {fileID: 0}
+  radius: 0
+  ballToSideRatio: 0
+  playerSectorPrefab: {fileID: 0}
+  enemySectorPrefab: {fileID: 0}
+  ballManager: {fileID: 0}

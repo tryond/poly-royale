@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,12 @@ using UnityEngine;
 
 public class PlayerPaddle : Paddle
 {
+    void Update()
+    {
+        movement = Input.GetAxis("Horizontal");
+    }
+    
+    
     void FixedUpdate()
     {
         movement = Input.GetAxis("Horizontal");

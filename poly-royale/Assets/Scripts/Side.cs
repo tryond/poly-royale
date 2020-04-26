@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Side : MonoBehaviour
+public abstract class Side : MonoBehaviour
 {
     public GameObject leftBound;
     public GameObject rightBound;
@@ -45,6 +45,7 @@ public class Side : MonoBehaviour
 
         // set scale
         var newDistance = Vector2.Distance(rightPosition, leftPosition);
+        
         transform.localScale = originalScale * (newDistance / originalScale.x);
 
         // set bound positions
