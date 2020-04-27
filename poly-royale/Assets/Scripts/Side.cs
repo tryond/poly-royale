@@ -7,9 +7,13 @@ public abstract class Side : MonoBehaviour
 
     private Vector3 originalScale;
 
+    protected LineRenderer lineRenderer;
+    
     private void Awake()
     {
         originalScale = transform.localScale;
+        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.startWidth = 0.25f;
     }
 
     // TODO: remove
@@ -18,10 +22,8 @@ public abstract class Side : MonoBehaviour
     // TODO: remove
     private void Update()
     {
-        if (debug)
-        {
-            Debug.DrawLine(leftBound.transform.position, rightBound.transform.position, Color.cyan);
-        }
+        var positions = new Vector3[] {leftBound.transform.position, rightBound.transform.position};
+        lineRenderer.SetPositions(positions);
     }
 
     public void SetLeftBound(Vector2 position)

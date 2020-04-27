@@ -19,14 +19,20 @@ public abstract class Paddle : MonoBehaviour
 
     [SerializeField] Goal goal;
 
+    [SerializeField] private ParticleSystem dustPrefab;
+    private ParticleSystem dust;
+    
     public event Action OnBallHit;
-    public event Action OnBoundHit;
+    public event Action OnLeftBoundHit;
+    public event Action OnRightBoundHit;
     
     private void Awake()
     {
         paddleWidth = transform.GetComponent<SpriteRenderer>().bounds.extents.x;
         leftBound = goal.leftBound.transform.localPosition.x + (paddleWidth / transform.parent.localScale.x);
         rightBound = goal.rightBound.transform.localPosition.x - (paddleWidth / transform.parent.localScale.x);
+
+        dust = dustPrefab ? Instantiate(dustPrefab) : null;
     }
 
     void FixedUpdate()
@@ -34,14 +40,21 @@ public abstract class Paddle : MonoBehaviour
         var translation = movement * speed * Time.deltaTime;
         var newX = Mathf.Clamp(transform.localPosition.x + translation, leftBound, rightBound);
 
-        if (newX == leftBound || newX == rightBound)
+        if (newX == leftBound)
         {
             movement = 0f;
             
             // notify listeners
-            OnBoundHit?.Invoke();
+            OnLeftBoundHit?.Invoke();
         }
-        
+        else if (newX == rightBound)
+        {
+            movement = 0f;
+            
+            // notify listeners
+            OnRightBoundHit?.Invoke();
+        }
+
         transform.localPosition = new Vector3(newX, 0f, 0f);
     }
     
@@ -69,7 +82,17 @@ public abstract class Paddle : MonoBehaviour
         if (other.gameObject.CompareTag("Ball"))
         {
             var ball = other.gameObject.GetComponent<Ball>();
-            ball.SetVelocity(ball.speed + ball.speedModifier, GetReflectionVector(ball.transform.up).normalized);
+            
+            // dust particles
+            if (dust != null)
+            {
+                var reflection = Vector3.Reflect(ball.transform.up, transform.up);
+                dust.transform.position = other.transform.position;
+                dust.transform.right = reflection.normalized;
+                dust.Play();
+            }
+            
+            ball.SetVelocity(ball.speed + speedModifier, GetReflectionVector(ball.transform.up).normalized);
             
             // notify listeners
             OnBallHit?.Invoke();

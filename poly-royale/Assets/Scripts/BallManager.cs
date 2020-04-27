@@ -22,21 +22,6 @@ public class BallManager : MonoBehaviour
         LaunchBalls(numBalls, random: true);
     }
 
-    void FixedUpdate()
-    {
-        // move each ball
-        foreach(Ball ball in balls)
-        {
-            // if outside of bounds, relaunch new ball
-            if (Vector2.Distance(ball.transform.position, transform.position) >= boundsRadius)
-            {
-                balls.Remove(ball);
-                Destroy(ball.gameObject);
-                // LaunchBalls(1);
-            }
-        }
-    }
-
     public void Remove(GameObject ball)
     {
         balls.Remove(ball.GetComponent<Ball>());
@@ -72,6 +57,7 @@ public class BallManager : MonoBehaviour
             angle = random ? Random.Range(0f, 360f) : i * uniformAngle;
 
             // activate and launch balls
+            ball.originalSpeed = speed;
             ball.SetVelocity(speed, Quaternion.Euler(0f, 0f, angle) * transform.right);
 
             // wait for next launch

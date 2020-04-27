@@ -6,6 +6,7 @@ TagManager:
   tags:
   - BallGoalCollider
   - Ball
+  - Enemy
   layers:
   - Default
   - TransparentFX

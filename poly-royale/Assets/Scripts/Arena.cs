@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 using UnityEngine.WSA;
@@ -14,13 +15,12 @@ public class Arena : MonoBehaviour
     [SerializeField] float radius;
     [SerializeField] float ballToSideRatio;
     
-    [SerializeField] private Goal playerGoalPrefab;
     [SerializeField] private Goal enemyGoalPrefab;
 
     [SerializeField] private Boundary boundaryPrefab;
     private List<Boundary> boundaries;
     
-    private Goal playerGoal;
+    public Goal playerGoal;
     private List<Goal> goals = new List<Goal>();
     
     [SerializeField] private BallManager ballManager;
@@ -28,8 +28,12 @@ public class Arena : MonoBehaviour
     private Polygon polygon;
     private Coroutine currentGoalTransition = null;
 
+    public static Arena current;
+    
     private void Start()
     {
+        current = this;
+        
         // create polygon from which to find sector positions
         polygon = new Polygon(numPlayers, radius);
         
@@ -37,7 +41,7 @@ public class Arena : MonoBehaviour
         goals = new List<Goal>();
         
         // add player (if defined) and enemy goals
-        goals.Add(Instantiate(playerGoalPrefab != null ? playerGoalPrefab : enemyGoalPrefab));
+        goals.Add(playerGoal.gameObject.activeSelf ? playerGoal : Instantiate(enemyGoalPrefab));
         for (int i = 1; i < numPlayers; i++)
             goals.Add(Instantiate(enemyGoalPrefab));
 
@@ -52,6 +56,16 @@ public class Arena : MonoBehaviour
         
         // set goal positions
         SetGoalPositions(overTime: 0f);
+    }
+
+    // TODO: debug
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            // reset the current scene
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 
     private void SetGoalPositions(float overTime = 0f)

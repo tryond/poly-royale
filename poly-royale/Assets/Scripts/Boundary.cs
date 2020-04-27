@@ -1,7 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
+[RequireComponent(typeof(LineRenderer))]
 public class Boundary : Side
 {
+    private void Start()
+    {
+        if (lineRenderer != null)
+            lineRenderer.startColor = Color.yellow;
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
