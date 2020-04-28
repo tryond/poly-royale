@@ -1,13 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
-[RequireComponent(typeof(LineRenderer))]
 public class Boundary : Side
 {
     private void Start()
     {
-        if (lineRenderer != null)
-            lineRenderer.startColor = Color.yellow;
+        lineRenderer.material.color = Color.yellow;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -19,8 +17,8 @@ public class Boundary : Side
         }
     }
 
-    private void Update()
-    {
-        Debug.DrawLine(leftBound.transform.position, rightBound.transform.position, Color.yellow);
-    }
+    // private void Update()
+    // {
+    //     Debug.DrawLine(leftBound.transform.position, rightBound.transform.position, Color.yellow);
+    // }
 }

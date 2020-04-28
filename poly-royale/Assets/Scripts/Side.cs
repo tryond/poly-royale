@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(LineRenderer))]
 public abstract class Side : MonoBehaviour
 {
     public GameObject leftBound;
@@ -22,8 +23,7 @@ public abstract class Side : MonoBehaviour
     // TODO: remove
     private void Update()
     {
-        var positions = new Vector3[] {leftBound.transform.position, rightBound.transform.position};
-        lineRenderer.SetPositions(positions);
+        lineRenderer.SetPositions(new Vector3[] {leftBound.transform.position, rightBound.transform.position});
     }
 
     public void SetLeftBound(Vector2 position)

@@ -10,11 +10,10 @@ public class Goal : Side
     private void Start()
     {
         if (CompareTag("Player"))
-            lineRenderer.startColor = Color.green;
+            lineRenderer.material.color = Color.green;
         else if (CompareTag("Enemy"))
-            lineRenderer.startColor = Color.red;
+            lineRenderer.material.color = Color.red;
     }
-
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
