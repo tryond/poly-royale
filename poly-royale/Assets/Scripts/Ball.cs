@@ -4,9 +4,11 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     public float speed;
-    public float speedModifier = 1f;
-    public float originalSpeed = 7f;
-    
+
+    public float minSpeed;
+    public float maxSpeed;
+    public float speedModifier;
+
     public void SetVelocity(float magnitude, Vector3 direction)
     {
         speed = magnitude;
@@ -20,7 +22,7 @@ public class Ball : MonoBehaviour
 
     private void OnBecameInvisible()
     {
-        speed = originalSpeed;
+        speed = minSpeed;
         gameObject.transform.position = Vector3.zero;
     }
 }

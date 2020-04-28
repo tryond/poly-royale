@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class BallManager : MonoBehaviour
@@ -7,8 +8,10 @@ public class BallManager : MonoBehaviour
     [SerializeField] private int numBalls;
     public int NumBalls { get { return numBalls; } }
 
-    [SerializeField] private float speed;
-    [SerializeField] [Range(0f, 1f)] private float speedModifier = 0f;
+    [SerializeField] private float minSpeed;
+    [SerializeField] private float maxSpeed;
+    [SerializeField] [Range(0f, 1f)] private float speedModifier = 0.05f;
+
     [SerializeField] private float boundsRadius;
     [SerializeField] private Ball ballPrefab;
 
@@ -19,7 +22,7 @@ public class BallManager : MonoBehaviour
     {
         // instantiate and store deactivated balls
         balls = new List<Ball>();
-        LaunchBalls(numBalls, random: true);
+        LaunchBalls(numBalls, random: true, overTime: 5f);
     }
 
     public void Remove(GameObject ball)
@@ -57,8 +60,11 @@ public class BallManager : MonoBehaviour
             angle = random ? Random.Range(0f, 360f) : i * uniformAngle;
 
             // activate and launch balls
-            ball.originalSpeed = speed;
-            ball.SetVelocity(speed, Quaternion.Euler(0f, 0f, angle) * transform.right);
+            ball.minSpeed = minSpeed;
+            ball.maxSpeed = maxSpeed;
+            ball.speedModifier = speedModifier;
+            
+            ball.SetVelocity(minSpeed, Quaternion.Euler(0f, 0f, angle) * transform.right);
 
             // wait for next launch
             yield return new WaitForSeconds(timeBetweenLaunches);

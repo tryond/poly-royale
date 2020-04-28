@@ -79,6 +79,7 @@ public abstract class Paddle : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        // TODO: this logic should be moved to ball (event)
         if (other.gameObject.CompareTag("Ball"))
         {
             var ball = other.gameObject.GetComponent<Ball>();
@@ -91,8 +92,10 @@ public abstract class Paddle : MonoBehaviour
                 dust.transform.right = reflection.normalized;
                 dust.Play();
             }
-            
-            ball.SetVelocity(ball.speed + speedModifier, GetReflectionVector(ball.transform.up).normalized);
+
+            var ballVelocity = ball.speed + (ball.speedModifier * (ball.maxSpeed - ball.speed));
+            var ballReflection = GetReflectionVector(ball.transform.up).normalized;
+            ball.SetVelocity(Mathf.Clamp(ballVelocity, ball.minSpeed, ball.maxSpeed), ballReflection);
             
             // notify listeners
             OnBallHit?.Invoke();

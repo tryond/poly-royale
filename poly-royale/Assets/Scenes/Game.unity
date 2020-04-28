@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startTransitionTime: 0.5
-  endTransitionTime: 10
+  endTransitionTime: 5
   numPlayers: 16
   radius: 15
   ballToSideRatio: 0.1
@@ -522,7 +522,7 @@ PrefabInstance:
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
       propertyPath: speedModifier
-      value: 0.025
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
@@ -535,6 +535,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6490238597174799159, guid: 0e6da6194de2e4b97871c60852cdc359,
         type: 3}
+    - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: minSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 5035123104432092020, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
       propertyPath: m_Name
