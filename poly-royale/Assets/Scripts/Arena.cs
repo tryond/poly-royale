@@ -10,7 +10,9 @@ using UnityEngine.WSA;
 
 public class Arena : MonoBehaviour
 {
-    [SerializeField] float transitionTime = 0.5f;
+    [SerializeField] float startTransitionTime = 0.5f;
+    [SerializeField] private float endTransitionTime = 3f;
+    
     [SerializeField] int numPlayers;
     [SerializeField] float radius;
     [SerializeField] float ballToSideRatio;
@@ -148,7 +150,12 @@ public class Arena : MonoBehaviour
             
             // transition sectors
             polygon = new Polygon(goals.Count, radius);
-            SetGoalPositions(overTime: transitionTime);
+
+            print("Ratio: " + goals.Count / numPlayers);
+            
+            var time = Mathf.Lerp(startTransitionTime, endTransitionTime, 1.0f - ((float) goals.Count / numPlayers));
+            print("Overt Time: " + time);
+            SetGoalPositions(overTime: time);
         }
     }
 }

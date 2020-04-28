@@ -16,9 +16,4 @@ public class Boundary : Side
             ball.SetVelocity(ball.speed, Vector3.Reflect(other.transform.up, transform.up));
         }
     }
-
-    // private void Update()
-    // {
-    //     Debug.DrawLine(leftBound.transform.position, rightBound.transform.position, Color.yellow);
-    // }
 }
