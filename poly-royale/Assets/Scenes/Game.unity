@@ -203,7 +203,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 15
+  orthographic size: 18
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -482,12 +482,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 519420031}
   playerGoal: {fileID: 935489731}
-  downwardTrauma: 0
-  ballTrauma: 0.33
-  traumaFalloff: 0.5
-  bumpForce: 1
-  maxAngle: 15
-  maxTranslation: 1
+  minBallTrauma: 0.25
+  maxBallTrauma: 0.3
+  translationalFrequency: 20
+  tranlationalTraumaFalloff: 0.5
+  maxAngle: 0.5
+  maxVerticalTranslation: 0.5
+  maxHorizontalTranslation: 0.1
+  rotationalTraumaFalloff: 0.75
+  rotationalFrequency: 20
 --- !u!4 &2029119256
 Transform:
   m_ObjectHideFlags: 0

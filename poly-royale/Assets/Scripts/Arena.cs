@@ -31,6 +31,10 @@ public class Arena : MonoBehaviour
     private Coroutine currentGoalTransition = null;
 
     public static Arena current;
+
+    public event Action OnTransitionStart;
+    public event Action OnTransitionEnd;
+    
     
     private void Start()
     {
@@ -80,6 +84,9 @@ public class Arena : MonoBehaviour
 
     private IEnumerator TransitionGoals(float overTime = 0f)
     {
+        // notify listeners
+        OnTransitionStart?.Invoke();
+        
         (Vector3 left, Vector3 right)[] startPositions = new (Vector3, Vector3)[goals.Count];
         for (int i = 0; i < goals.Count; i++)
             startPositions[i] = (goals[i].leftBound.transform.position, goals[i].rightBound.transform.position);
@@ -113,6 +120,9 @@ public class Arena : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         currentGoalTransition = null;
+        
+        // notify listeners
+        OnTransitionEnd?.Invoke();
     }
 
     public void GoalScored(GameObject goal, GameObject ball)

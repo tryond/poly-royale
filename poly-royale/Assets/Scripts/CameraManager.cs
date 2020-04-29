@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class CameraManager : MonoBehaviour
@@ -9,18 +11,27 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Camera camera;
     [SerializeField] private Goal playerGoal;
 
-    [SerializeField] private float downwardTrauma = 0f;
-    [SerializeField] private float ballTrauma = 0.25f;
-    [SerializeField] private float traumaFalloff = 0.25f;
+    [SerializeField] private float minBallTrauma = 0.55f;
+    [SerializeField] private float maxBallTrauma = 0.55f;
+    [SerializeField] private float translationalFrequency = 1f;
+    [SerializeField] private float tranlationalTraumaFalloff = 0.15f;
+    private float downwardTrauma = 0f;
+
     
-    [SerializeField] private float bumpForce = 1f;
+    [SerializeField] private float maxAngle = 0.1f;
+    [SerializeField] private float maxVerticalTranslation = 0.05f;
+    [SerializeField] private float maxHorizontalTranslation = 0.1f;
 
-    [SerializeField] private float maxAngle = 15f;
-    [SerializeField] private float maxTranslation = 0.05f;
-
+    [SerializeField] private float rotationalTraumaFalloff = 0.25f;
+    [SerializeField] private float rotationalFrequency = 1f;
+    private float rotationalTrauma = 0f;
+    
     private Vector3 originalUp;
     private Vector3 originalCenter;
-    
+
+    private bool transitioning = false;
+
+    private float seed = Random.value;
     
     // Start is called before the first frame update
     void Start()
@@ -38,24 +49,42 @@ public class CameraManager : MonoBehaviour
         
         print("CM: Player Goal: " + playerGoal);
         print("CM: Player Paddle: " + playerPaddle);
+
+        Arena.current.OnTransitionStart += StartTransition;
+        Arena.current.OnTransitionEnd += EndTransition;
     }
 
-    private void BallHit()
+    private void BallHit(Ball ball)
     {
+        var ballTrauma = (ball.speed - ball.minSpeed) / (ball.maxSpeed - ball.minSpeed);
+        ballTrauma = Mathf.Lerp(minBallTrauma, maxBallTrauma, ballTrauma);
         downwardTrauma = Mathf.Clamp(downwardTrauma + ballTrauma, 0f, 1f);
     }
 
+    private void StartTransition()
+    {
+        transitioning = true;
+    }
+
+    private void EndTransition()
+    {
+        transitioning = false;
+    }
+    
     private void FixedUpdate()
     {
+        // translate
         var shake = downwardTrauma * downwardTrauma;
-        var angle = maxAngle * shake * UnityEngine.Random.Range(-1f, 1f);
-        var offsetX = maxTranslation * shake * UnityEngine.Random.Range(-1f, 1f);
-        var offsetY = maxTranslation * shake * UnityEngine.Random.Range(-1f, 1f);
+        var offsetX = maxHorizontalTranslation * shake * (Mathf.PerlinNoise(seed, Time.time  * translationalFrequency) * 2.0f - 1.0f) * 0.5f;
+        var offsetY = maxVerticalTranslation * shake * (Mathf.PerlinNoise(seed + 1, Time.time  * translationalFrequency) * 2.0f - 1.0f) * 0.5f;
+        camera.transform.position = originalCenter + new Vector3(offsetX, offsetY, 0f);
+        downwardTrauma = Mathf.Clamp(downwardTrauma - (tranlationalTraumaFalloff * Time.fixedDeltaTime), 0f, 1f);
 
-        // TODO: rotation
-        camera.transform.position = originalCenter + new Vector3(0f, offsetY, 0f);
-        
-        downwardTrauma = Mathf.Clamp(downwardTrauma - (traumaFalloff * Time.fixedDeltaTime), 0f, 1f);
+        // rotate
+        rotationalTrauma = transitioning ? 1f : Mathf.Clamp(rotationalTrauma - (rotationalTraumaFalloff * Time.fixedDeltaTime), 0f, 1f);
+        var twist = rotationalTrauma * rotationalTrauma;
+        var angle = maxAngle * twist * (Mathf.PerlinNoise(seed + 2, Time.time * rotationalFrequency) * 2.0f - 1.0f) * 0.5f;
+        camera.transform.up = Quaternion.Euler(0f, 0f, angle) * originalUp;
     }
 
     private void BumpCamera(float force, Vector3 direction)

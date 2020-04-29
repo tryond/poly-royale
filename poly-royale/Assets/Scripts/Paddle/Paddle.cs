@@ -22,7 +22,7 @@ public abstract class Paddle : MonoBehaviour
     [SerializeField] private ParticleSystem dustPrefab;
     private ParticleSystem dust;
     
-    public event Action OnBallHit;
+    public event Action<Ball> OnBallHit;
     public event Action OnLeftBoundHit;
     public event Action OnRightBoundHit;
     
@@ -98,7 +98,7 @@ public abstract class Paddle : MonoBehaviour
             ball.SetVelocity(Mathf.Clamp(ballVelocity, ball.minSpeed, ball.maxSpeed), ballReflection);
             
             // notify listeners
-            OnBallHit?.Invoke();
+            OnBallHit?.Invoke(ball);
         }
     }
 }
