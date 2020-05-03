@@ -123,38 +123,27 @@ public class Arena : MonoBehaviour
 
     public void GoalScored(GameObject goal, GameObject ball)
     {
-        // if (goal.CompareTag("Player"))
-        // {
-        //     // quit the application
-        //     //UnityEngine.Application.Quit();
-        //
-        //     // reset the current scene
-        //     // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        // }
-        // else
-        // {
-        // stop current sector transition
-        
+        // stop current transition
         if (currentGoalTransition != null)
             StopCoroutine(currentGoalTransition);
 
         // destroy the ball
         ballManager.Remove(ball);
 
-        // destroy the sector
+        // destroy the goal
         if (goals.Remove(goal.GetComponent<Goal>()))
         {
+            // display score if player out
+            if (goal.CompareTag("Player") || goals.Count <= 1)
+                Canvas.instance.DisplayScore(playersRemaining: goals.Count, playersTotal: numPlayers);
+            
             Destroy(goal.gameObject);
             
             var boundary = boundaries[0];
             boundaries.RemoveAt(0);
             Destroy(boundary.gameObject);
         }
-        
-        // reset if only one player remaining
-        if (goals.Count <= 1)
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        
+
         // transition sectors
         polygon = new Polygon(goals.Count, radius);
 
@@ -163,7 +152,5 @@ public class Arena : MonoBehaviour
         var time = Mathf.Lerp(startTransitionTime, endTransitionTime, 1.0f - ((float) goals.Count / numPlayers));
         print("Overt Time: " + time);
         SetGoalPositions(overTime: time);
-        
-        // }
     }
 }
