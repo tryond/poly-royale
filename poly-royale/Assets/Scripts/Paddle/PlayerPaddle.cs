@@ -11,8 +11,7 @@ public class PlayerPaddle : Paddle
     {
         movement = Input.GetAxis("Horizontal");
     }
-    
-    
+
     void FixedUpdate()
     {
         movement = Input.GetAxis("Horizontal");
@@ -27,5 +26,11 @@ public class PlayerPaddle : Paddle
 
         // TODO: debug
         DrawNormals();
+    }
+    
+    protected void OnTriggerEnter2D(Collider2D other)
+    {
+        base.OnTriggerEnter2D(other);
+        AudioManager.instance.Play("BallHit");
     }
 }

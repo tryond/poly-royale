@@ -31,7 +31,7 @@ public class CameraManager : MonoBehaviour
 
     private bool transitioning = false;
 
-    private float seed = Random.value;
+    private float seed;
     
     // Start is called before the first frame update
     void Start()
@@ -52,6 +52,8 @@ public class CameraManager : MonoBehaviour
 
         Arena.current.OnTransitionStart += StartTransition;
         Arena.current.OnTransitionEnd += EndTransition;
+
+        seed = Random.value;
     }
 
     private void BallHit(Ball ball)
