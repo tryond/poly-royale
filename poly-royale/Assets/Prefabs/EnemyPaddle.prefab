@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 4935633505905191052}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.25, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.25, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -143,10 +143,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a17da7e6d34a449d1bbec67d9747338e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.25
+  movement: 0
   maxNormalAngle: 45
   maxReflectionAngle: 60
-  speedModifier: 1
-  goal: {fileID: 0}
   dustPrefab: {fileID: 4268676770751639499, guid: 6364bb5a9ab2848c2a50d3ff6324c851,
     type: 3}

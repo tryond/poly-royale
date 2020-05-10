@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Data;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -13,8 +15,13 @@ public class Player : Side
     [SerializeField] private float goalDamage;
     [SerializeField] private float bumpRegen;
     [SerializeField] private float healthRegen;
+
+    private float basePaddleScaleX;
+    private float minPaddleScaleX;
     
-    
+    [SerializeField] private float paddleScaleTime;
+    private Coroutine currentPaddleScaleCoroutine = null;
+
     private float maxHP;
     private float minX;
     private float maxX;
@@ -23,7 +30,9 @@ public class Player : Side
     private Paddle paddle;
     public Paddle Paddle => paddle;
 
-    public (float left, float right) Bounds
+    private Ball lastBallScored = null;
+
+    public (float left, float right) PaddleBounds
     {
         get { return (left: minX, right: maxX); }
         private set { 
@@ -32,7 +41,7 @@ public class Player : Side
         }
     }
     
-    public event Action<Player> OnPlayerEliminated;
+    public event Action<Player, Ball> OnPlayerEliminated;
     
     protected override void Awake()
     {
@@ -52,42 +61,43 @@ public class Player : Side
         goal.OnGoalScored += GoalScored;
         paddle.OnBallHit += BallHit;
         
+        // set initial scales
+        basePaddleScaleX = paddle.transform.localScale.x;
+        minPaddleScaleX = 0.001f;
+        
         // set paddle bounds
-        UpdatePaddleBounds();
+        UpdatePaddle();
     }
 
     public override void SetBounds(Vector3 leftPosition, Vector3 rightPosition)
     {
         base.SetBounds(leftPosition, rightPosition);
-        UpdatePaddleBounds();
+        UpdatePaddle();
     }
 
-    private void UpdatePaddleBounds()
+    private void UpdatePaddle()
     {
         if (!paddle)
             return;
         
-        var relativeWidth = paddle.Width / transform.localScale.x;
-        Bounds = (
-            LeftBound.transform.localPosition.x + relativeWidth,
-            RightBound.transform.localPosition.x - relativeWidth
-        );
-    }
-    
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            UpdateHP(bumpRegen);
-        }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            UpdateHP(-goalDamage);
-        }
-        
-        UpdateHP(healthRegen * Time.deltaTime);
+        if (currentPaddleScaleCoroutine != null)
+            StopCoroutine(currentPaddleScaleCoroutine);
+        currentPaddleScaleCoroutine = StartCoroutine(ScalePaddle());
     }
 
+    private void Update()
+    {
+        UpdateHP(healthRegen * Time.deltaTime);
+        
+        // TODO: test
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SetBounds(
+                LeftBound - new Vector3(1f, 1f, 0f), 
+                RightBound + new Vector3(1f, 1f, 0f)
+            );
+        }
+    }
 
     private void UpdateHP(float amount)
     {
@@ -98,29 +108,15 @@ public class Player : Side
         if (hp <= 0f)
         {
             // notify listeners
-            OnPlayerEliminated?.Invoke(this);
+            OnPlayerEliminated?.Invoke(this, lastBallScored);
         }
-        paddle.Width = hp / maxHP;
-        UpdatePaddleBounds();
+        UpdatePaddle();
     }
-    
-    
+
     private void GoalScored(Ball ball)
     {
-        // update HP
-        hp = Mathf.Max(0f, hp - goalDamage);
-        
-        // process new HP
-        if (hp <= 0f)
-        {
-            // notify listeners
-            OnPlayerEliminated?.Invoke(this);
-        }
-        else
-        {
-            paddle.Width = hp / maxHP;
-            UpdatePaddleBounds();
-        }
+        lastBallScored = ball;
+        UpdateHP(-goalDamage);
         
         // reflect ball
         ball.SetVelocity(ball.speed, Vector3.Reflect(ball.transform.up, transform.up));
@@ -128,9 +124,39 @@ public class Player : Side
 
     private void BallHit(Ball ball)
     {
-        // update HP
-        hp = Mathf.Min(maxHP, hp + bumpRegen);
-        paddle.Width = hp / maxHP;
-        UpdatePaddleBounds();
+        UpdateHP(bumpRegen);
+    }
+
+    private void UpdatePaddleBounds()
+    {
+        var paddleExtent = paddle.transform.localScale.x / 2.0f;
+        PaddleBounds = (-0.5f + paddleExtent, 0.5f - paddleExtent);
+    }
+    
+    private IEnumerator ScalePaddle()
+    {
+        var transition = 0f;
+        var elapsedTime = 0f;
+        
+        var start = paddle.transform.localScale;
+        var endX = Mathf.Max((hp / maxHP) * basePaddleScaleX, minPaddleScaleX);
+        
+        while (transition < 1f)
+        {
+            var t = paddleScaleTime > 0f ? elapsedTime / paddleScaleTime : 1f;
+            transition = Mathf.Clamp(1 - (1 - t) * (1 - t) * (1 - t), 0f, 1f);  // smooth stop
+            
+            // determine new width
+            var currentX = Mathf.Lerp(start.x, endX, transition);
+            paddle.transform.localScale = new Vector3(currentX, start.y, start.z);
+
+            // update paddle bounds
+            UpdatePaddleBounds();
+            
+            // wait for the end of frame and yield
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        currentPaddleScaleCoroutine = null;
     }
 }

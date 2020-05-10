@@ -13,36 +13,11 @@ public class Paddle : MonoBehaviour
     
     private ParticleSystem dust;
 
-    private Vector3 currentScale;
-    private Vector3 baseScale;
-    private float baseWidth;
-    private float transitionTime = 0.25f;
-    private Coroutine currentTransition = null;
-
-    private float minScale = 0.001f;
-    
-    public float Width
-    {
-        get => baseWidth * (currentScale.x / baseScale.x);
-        set
-        {
-            value = Mathf.Max(value, minScale);
-            currentScale = baseScale * value;
-            if (currentTransition != null)
-                StopCoroutine(currentTransition);
-            currentTransition = StartCoroutine(Transition(currentScale));
-        }
-    }
-
     public event Action<Ball> OnBallHit;
 
     private void Awake()
     {
         dust = dustPrefab ? Instantiate(dustPrefab) : null;
-
-        baseScale = transform.localScale;
-        currentScale = baseScale;
-        baseWidth = transform.GetComponent<SpriteRenderer>().bounds.extents.x;
     }
     
     public Vector3 GetNormalVector()
@@ -81,27 +56,5 @@ public class Paddle : MonoBehaviour
 
         // notify listeners
         OnBallHit?.Invoke(ball);
-    }
-
-    private IEnumerator Transition(Vector3 scale)
-    {
-        var transition = 0f;
-        var elapsedTime = 0f;
-        var startingScale = transform.localScale;
-
-        while (transition < 1f)
-        {
-            var t = transitionTime > 0f ? elapsedTime / transitionTime : 1f;
-            transition = Mathf.Clamp(1 - (1 - t) * (1 - t) * (1 - t), 0f, 1f);  // smooth stop
-            
-            // determine new width
-            var xScale = Mathf.Lerp(startingScale.x, scale.x, transition);
-            transform.localScale = new Vector3(xScale, startingScale.y, startingScale.z);
-
-            // wait for the end of frame and yield
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-        currentTransition = null;
     }
 }

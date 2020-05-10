@@ -26,8 +26,17 @@ public abstract class Side : MonoBehaviour
         SetBounds(transform.position - extent, rightBound.transform.position = transform.position + extent);
     }
 
-    protected GameObject LeftBound { get => leftBound; }
-    protected GameObject RightBound { get => rightBound; }
+    public Vector3 LeftBound
+    {
+        get => leftBound.transform.position;
+        set => leftBound.transform.position = value;
+    }
+
+    public Vector3 RightBound
+    {
+        get => rightBound.transform.position;
+        set => rightBound.transform.position = value;
+    }
 
     public virtual void SetBounds(Vector3 leftPosition, Vector3 rightPosition)
     {
@@ -45,8 +54,8 @@ public abstract class Side : MonoBehaviour
         transform.localScale = originalScale * (Vector2.Distance(rightPosition, leftPosition) / originalScale.x);
 
         // set bound positions
-        leftBound.transform.position = leftPosition;
-        rightBound.transform.position = rightPosition;
+        LeftBound = leftPosition;
+        RightBound = rightPosition;
         
         // set line renderer positions
         lineRenderer.SetPositions(new[] {leftPosition, rightPosition});
