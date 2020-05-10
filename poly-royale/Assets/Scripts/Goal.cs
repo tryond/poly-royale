@@ -1,30 +1,19 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Experimental.Audio;
 using UnityEngine.PlayerLoop;
 
-public class Goal : Side
+[RequireComponent(typeof(Collider2D))]
+public class Goal : MonoBehaviour
 {
-    public event Action<GameObject, GameObject> OnGoalScored;
-    private AudioSource goalSound;
-
     [SerializeField] private ParticleSystem goalEffectPrefab;
+    [SerializeField] private string destroyAudioName;
+    
     private ParticleSystem goalEffect;
 
-    private string destroyAudioName;
+    public event Action<Ball> OnGoalScored;
     
     private void Start()
     {
-        if (CompareTag("Player"))
-        {
-            lineRenderer.material.color = Color.green;
-            destroyAudioName = "PlayerDestroyed";
-        }
-        else if (CompareTag("Enemy"))
-        {
-            lineRenderer.material.color = Color.red;
-            destroyAudioName = "EnemyDestroyed";
-        }
         goalEffect = goalEffectPrefab ? Instantiate(goalEffectPrefab) : null;
     }
 
@@ -38,7 +27,9 @@ public class Goal : Side
                 goalEffect.Play();
             }
             AudioManager.instance.Play(destroyAudioName);
-            OnGoalScored?.Invoke(this.gameObject, collision.gameObject.transform.parent.gameObject);
+
+            var ball = collision.GetComponentInParent<Ball>();
+            OnGoalScored?.Invoke(ball);
         }
     }
 }

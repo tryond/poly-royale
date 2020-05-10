@@ -11,7 +11,6 @@ public class Arena : MonoBehaviour
     
     [SerializeField] int numPlayers;
     [SerializeField] float radius;
-    [SerializeField] float ballToSideRatio;
     
     [SerializeField] private Goal enemyGoalPrefab;
 
@@ -48,8 +47,8 @@ public class Arena : MonoBehaviour
             goals.Add(Instantiate(enemyGoalPrefab));
 
         // listen to all goals
-        foreach (Goal goal in goals)
-            goal.OnGoalScored += GoalScored;
+        // foreach (Goal goal in goals)
+        //     goal.OnGoalScored += GoalScored;
         
         // create boundaries
         boundaries = new List<Boundary>();
@@ -80,45 +79,46 @@ public class Arena : MonoBehaviour
 
     private IEnumerator TransitionGoals(float overTime = 0f)
     {
-        // notify listeners
-        OnTransitionStart?.Invoke();
-        
-        (Vector3 left, Vector3 right)[] startPositions = new (Vector3, Vector3)[goals.Count];
-        for (int i = 0; i < goals.Count; i++)
-            startPositions[i] = (goals[i].leftBound.transform.position, goals[i].rightBound.transform.position);
-
-        float transition = 0f;
-        float elapsedTime = 0f;
-
-        while (transition < 1f)
-        {
-            var t = overTime > 0f ? elapsedTime / overTime : 1f;
-            transition = Mathf.Clamp(1 - (1 - t) * (1 - t) * (1 - t), 0f, 1f);  // smooth stop
-            
-            // determine new goal positions first
-            for (int i = 0; i < goals.Count; ++i)
-            {
-                var leftPoint = Vector3.Lerp(startPositions[i].left, polygon.Positions[i].left, transition).normalized * radius;
-                var rightPoint = Vector3.Lerp(startPositions[i].right, polygon.Positions[i].right, transition).normalized * radius;
-                goals[i].SetBounds(leftPoint, rightPoint);
-            }
-            
-            // set boundaries
-            for (int i = 0; i < boundaries.Count; i++)
-            {
-                boundaries[i].SetBounds(
-                    goals[i % goals.Count].rightBound.transform.position,
-                    goals[(i + 1) % goals.Count].leftBound.transform.position);
-            }
-
-            // wait for the end of frame and yield
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-        currentGoalTransition = null;
-        
-        // notify listeners
-        OnTransitionEnd?.Invoke();
+        // // notify listeners
+        // OnTransitionStart?.Invoke();
+        //
+        // (Vector3 left, Vector3 right)[] startPositions = new (Vector3, Vector3)[goals.Count];
+        // for (int i = 0; i < goals.Count; i++)
+        //     startPositions[i] = (goals[i].leftBound.transform.position, goals[i].rightBound.transform.position);
+        //
+        // float transition = 0f;
+        // float elapsedTime = 0f;
+        //
+        // while (transition < 1f)
+        // {
+        //     var t = overTime > 0f ? elapsedTime / overTime : 1f;
+        //     transition = Mathf.Clamp(1 - (1 - t) * (1 - t) * (1 - t), 0f, 1f);  // smooth stop
+        //     
+        //     // determine new goal positions first
+        //     for (int i = 0; i < goals.Count; ++i)
+        //     {
+        //         var leftPoint = Vector3.Lerp(startPositions[i].left, polygon.Positions[i].left, transition).normalized * radius;
+        //         var rightPoint = Vector3.Lerp(startPositions[i].right, polygon.Positions[i].right, transition).normalized * radius;
+        //         goals[i].SetBounds(leftPoint, rightPoint);
+        //     }
+        //     
+        //     // set boundaries
+        //     for (int i = 0; i < boundaries.Count; i++)
+        //     {
+        //         boundaries[i].SetBounds(
+        //             goals[i % goals.Count].rightBound.transform.position,
+        //             goals[(i + 1) % goals.Count].leftBound.transform.position);
+        //     }
+        //
+        //     // wait for the end of frame and yield
+        //     elapsedTime += Time.deltaTime;
+        //     yield return new WaitForEndOfFrame();
+        // }
+        // currentGoalTransition = null;
+        //
+        // // notify listeners
+        // OnTransitionEnd?.Invoke();
+        yield return new WaitForEndOfFrame();
     }
 
     public void GoalScored(GameObject goal, GameObject ball)

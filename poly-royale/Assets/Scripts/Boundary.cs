@@ -1,10 +1,13 @@
 ﻿using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
+[RequireComponent(typeof(Collider2D))]
 public class Boundary : Side
 {
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
         lineRenderer.material.color = Color.yellow;
     }
 
