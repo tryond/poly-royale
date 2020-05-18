@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -22,6 +23,9 @@ public class Arena : MonoBehaviour
     
     [SerializeField] private BallManager ballManager;
 
+    [SerializeField] private Corner cornerPrefab;
+    private List<Corner> corners;
+    
     private Polygon polygon;
     private Coroutine currentGoalTransition = null;
 
@@ -55,6 +59,11 @@ public class Arena : MonoBehaviour
         for (int i = 0; i < numPlayers; i++)
             boundaries.Add(Instantiate(boundaryPrefab));
         
+        // set corner positions
+        corners = new List<Corner>();
+        for (int i = 0; i < numPlayers; i++)
+            corners.Add(Instantiate(cornerPrefab));
+        
         // set goal positions
         SetGoalPositions(overTime: 0f);
     }
@@ -84,8 +93,10 @@ public class Arena : MonoBehaviour
         
         (Vector3 left, Vector3 right)[] startPositions = new (Vector3, Vector3)[players.Count];
         for (int i = 0; i < players.Count; i++)
+        {
             startPositions[i] = (players[i].LeftBound, players[i].RightBound);
-        
+        }
+
         float transition = 0f;
         float elapsedTime = 0f;
         
@@ -100,6 +111,7 @@ public class Arena : MonoBehaviour
                 var leftPoint = Vector3.Lerp(startPositions[i].left, polygon.Positions[i].left, transition).normalized * radius;
                 var rightPoint = Vector3.Lerp(startPositions[i].right, polygon.Positions[i].right, transition).normalized * radius;
                 players[i].SetBounds(leftPoint, rightPoint);
+                corners[i].transform.position = leftPoint;
             }
             
             // set boundaries
@@ -141,6 +153,10 @@ public class Arena : MonoBehaviour
             var boundary = boundaries[0];
             boundaries.RemoveAt(0);
             Destroy(boundary.gameObject);
+
+            var corner = corners[0];
+            corners.RemoveAt(0);
+            Destroy(corner.gameObject);
         }
 
         // transition sectors

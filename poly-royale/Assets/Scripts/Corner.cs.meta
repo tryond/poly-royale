@@ -1,11 +1,9 @@
 fileFormatVersion: 2
-guid: d32ec9ea656c641a796a532203d73534
+guid: c24bb14285ccb82458928f9463283359
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - dustPrefab: {fileID: 4268676770751639499, guid: 6364bb5a9ab2848c2a50d3ff6324c851,
-      type: 3}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

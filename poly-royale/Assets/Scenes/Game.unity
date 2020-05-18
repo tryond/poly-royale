@@ -141,7 +141,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startTransitionTime: 2
   endTransitionTime: 5
-  numPlayers: 10
+  numPlayers: 20
   radius: 15
   enemyPlayerPrefab: {fileID: 7632697297777946449, guid: a22c14730edf72346ae5d4fb7dbbda81,
     type: 3}
@@ -420,7 +420,7 @@ PrefabInstance:
     - target: {fileID: 3124779394656244033, guid: 946f449a4acbc1c47b7c1585ca67d418,
         type: 3}
       propertyPath: speed
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3124779394656244036, guid: 946f449a4acbc1c47b7c1585ca67d418,
         type: 3}
@@ -744,7 +744,7 @@ PrefabInstance:
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
       propertyPath: numBalls
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
@@ -754,7 +754,7 @@ PrefabInstance:
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
       propertyPath: speedModifier
-      value: 0.2
+      value: 0.025
       objectReference: {fileID: 0}
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
@@ -770,12 +770,12 @@ PrefabInstance:
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
       propertyPath: minSpeed
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2381314769972720812, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
       propertyPath: maxSpeed
-      value: 16
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 5035123104432092020, guid: aa24858ac38534fe5b03c5038b8b206a,
         type: 3}
