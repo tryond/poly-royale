@@ -9,15 +9,21 @@ public class Ball : MonoBehaviour
     public float maxSpeed;
     public float speedModifier;
 
+    public Vector3 Direction
+    {
+        get => transform.up;
+        set => transform.up = value.normalized;
+    }
+
     public void SetVelocity(float magnitude, Vector3 direction)
     {
         speed = magnitude;
-        gameObject.transform.up = direction.normalized;
+        Direction = direction;
     }
 
     private void FixedUpdate()
     {
-        transform.position += speed * Time.fixedDeltaTime * transform.up;   
+        transform.position += speed * Time.fixedDeltaTime * Direction;   
     }
 
     private void OnBecameInvisible()

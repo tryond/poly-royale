@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7632697297777946448}
   - component: {fileID: 7632697297777946449}
   - component: {fileID: 7632697297777946455}
+  - component: {fileID: 4689223527807171679}
   m_Layer: 0
   m_Name: EnemyPlayer
   m_TagString: Untagged
@@ -144,8 +145,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: 3
   color: {r: 1, g: 0, b: 0.07817793, a: 0}
-  goalPrefab: {fileID: 5911880687942015756, guid: d6b13d16aa9893347b79ec707b41b15e,
-    type: 3}
   paddlePrefab: {fileID: 4935633505905191050, guid: 34d1706676b3747f082fe7ee1cd95c83,
     type: 3}
   goalDamage: 1
@@ -165,3 +164,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0.15
+--- !u!68 &4689223527807171679
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7632697297777946451}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.5, y: 0}
+  - {x: 0.5, y: 0}

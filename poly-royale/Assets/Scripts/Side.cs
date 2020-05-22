@@ -2,6 +2,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
+[RequireComponent(typeof(Collider2D))]
 public abstract class Side : MonoBehaviour
 {
     private GameObject leftBound;
@@ -59,5 +60,23 @@ public abstract class Side : MonoBehaviour
         
         // set line renderer positions
         lineRenderer.SetPositions(new[] {leftPosition, rightPosition});
+    }
+    
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ball"))
+        {
+            ReflectBall(collision.GetComponent<Ball>());
+        }
+    }
+
+    protected void ReflectBall(Ball ball)
+    {
+        ball.SetVelocity(ball.speed, Vector3.Reflect(ball.Direction, GetNormal()));
+    }
+
+    protected virtual Vector3 GetNormal()
+    {
+        return transform.up;
     }
 }

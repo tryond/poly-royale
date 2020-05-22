@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3124779394656244038}
   - component: {fileID: 3124779394656244039}
   - component: {fileID: 3124779394656244033}
+  - component: {fileID: 7698741811476152930}
   m_Layer: 0
   m_Name: MainPlayer
   m_TagString: Untagged
@@ -144,13 +145,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: 3
   color: {r: 0, g: 1, b: 0.021962404, a: 0}
-  goalPrefab: {fileID: 5911880687942015756, guid: d6b13d16aa9893347b79ec707b41b15e,
-    type: 3}
   paddlePrefab: {fileID: 4547080251778024177, guid: 2e8a233d751d54c81938b0a2e5f5fe66,
     type: 3}
   goalDamage: 1
   bumpRegen: 1
   healthRegen: 0
+  paddleScaleTime: 0
 --- !u!114 &3124779394656244033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,3 +164,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1
+--- !u!68 &7698741811476152930
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3124779394656244037}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.5, y: 0}
+  - {x: 0.5, y: 0}
