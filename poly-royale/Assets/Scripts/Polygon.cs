@@ -40,7 +40,8 @@ using UnityEngine;
         // determine base vertex which to rotate around circle
         float theta = 360f / numSides;
         SideLength = (float)(2f * radius * Math.Tan((theta * Math.PI) / 360f));
-        Vector3 baseVertex = Quaternion.Euler(0f, 0f, -theta / 2) * new Vector3(0f, -radius, 0f);
+        // Vector3 baseVertex = Quaternion.Euler(0f, 0f, -theta / 2) * new Vector3(0f, -radius, 0f);
+        Vector3 baseVertex = new Vector3(radius, 0f, 0f);
 
         // calculate points around circle
         var points = new Vector3[numSides];

@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 public class CameraManager : MonoBehaviour
 {
     [SerializeField] private Camera camera;
-    [SerializeField] private Goal playerGoal;
+    [SerializeField] private Side playerSide;
 
     [SerializeField] private float minBallTrauma = 0.55f;
     [SerializeField] private float maxBallTrauma = 0.55f;
@@ -40,9 +40,9 @@ public class CameraManager : MonoBehaviour
         originalCenter = camera.transform.position;
         
         Paddle playerPaddle = null;
-        if (playerGoal != null)
+        if (playerSide != null)
         {
-            playerPaddle = playerGoal.GetComponentInChildren<Paddle>();
+            playerPaddle = playerSide.GetComponent<Paddle>();
             if (playerPaddle != null)
                 playerPaddle.OnBallHit += BallHit;
         }
@@ -72,6 +72,10 @@ public class CameraManager : MonoBehaviour
     
     private void FixedUpdate()
     {
+        // update with main player
+        if (playerSide)
+            originalUp = playerSide.transform.up;
+        
         // translate
         var shake = downwardTrauma * downwardTrauma;
         var offsetX = maxHorizontalTranslation * shake * (Mathf.PerlinNoise(seed, Time.time  * translationalFrequency) * 2.0f - 1.0f) * 0.5f;
