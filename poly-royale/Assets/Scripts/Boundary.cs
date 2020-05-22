@@ -11,12 +11,12 @@ public class Boundary : Side
         lineRenderer.material.color = Color.yellow;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Ball"))
-        {
-            var ball = other.GetComponent<Ball>();
-            ball.SetVelocity(ball.speed, Vector3.Reflect(other.transform.up, transform.up));
-        }
-    }
+    // private void OnTriggerEnter2D(Collider2D other)
+    // {
+    //     if (other.CompareTag("Ball"))
+    //     {
+    //         var ball = other.GetComponent<Ball>();
+    //         ball.SetVelocity(ball.speed, Vector3.Reflect(other.transform.up, transform.up));
+    //     }
+    // }
 }

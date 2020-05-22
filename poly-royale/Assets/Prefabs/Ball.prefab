@@ -101,6 +101,9 @@ MonoBehaviour:
   minSpeed: 0
   maxSpeed: 0
   speedModifier: 1
+  targetPrefab: {fileID: 10223754250740440, guid: 58becd2fe870fbb46ba160a70a972926,
+    type: 3}
+  target: {fileID: 0}
 --- !u!58 &6821377614499434480
 CircleCollider2D:
   m_ObjectHideFlags: 0

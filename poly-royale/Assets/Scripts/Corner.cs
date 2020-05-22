@@ -10,7 +10,8 @@ public class Corner : MonoBehaviour
         {
             var normal = (other.transform.position - transform.position).normalized;
             var ball = other.GetComponent<Ball>();
-            ball.SetVelocity(ball.speed, Vector3.Reflect(other.transform.up, normal));
+            
+            ball.SetVelocity(ball.speed, Vector3.Reflect(ball.Direction, normal));
         }
     }
 }

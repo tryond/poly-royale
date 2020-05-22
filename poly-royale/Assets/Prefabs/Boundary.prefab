@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4254560165558622889}
   - component: {fileID: 6642951431126140977}
   - component: {fileID: 1775885517238798251}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Boundary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,9 +146,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 316bf2668194b4081ab766414282752c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftBound: {fileID: 6974407417000221010}
-  rightBound: {fileID: 9101805287106688755}
-  debug: 0
 --- !u!120 &1775885517238798251
 LineRenderer:
   m_ObjectHideFlags: 0

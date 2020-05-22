@@ -46,9 +46,6 @@ public class CameraManager : MonoBehaviour
             if (playerPaddle != null)
                 playerPaddle.OnBallHit += BallHit;
         }
-        
-        print("CM: Player Goal: " + playerGoal);
-        print("CM: Player Paddle: " + playerPaddle);
 
         Arena.current.OnTransitionStart += StartTransition;
         Arena.current.OnTransitionEnd += EndTransition;

@@ -12,6 +12,8 @@ public abstract class Side : MonoBehaviour
 
     protected LineRenderer lineRenderer;
     
+    [SerializeField] [Range(0f, 90f)] float maxReflectionAngle = 80f;
+    
     protected virtual void Awake()
     {
         originalScale = transform.localScale;
@@ -72,7 +74,10 @@ public abstract class Side : MonoBehaviour
 
     protected void ReflectBall(Ball ball)
     {
-        ball.SetVelocity(ball.speed, Vector3.Reflect(ball.Direction, GetNormal()));
+        Vector3 rawReflection = Vector3.Reflect(ball.Direction, GetNormal());
+        var difference = Vector3.SignedAngle(rawReflection, transform.up, transform.forward);
+        difference = Mathf.Clamp(difference, -maxReflectionAngle, maxReflectionAngle);
+        ball.SetVelocity(ball.speed, Quaternion.Euler(0f, 0f, -difference) * transform.up);
     }
 
     protected virtual Vector3 GetNormal()
