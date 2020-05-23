@@ -2,6 +2,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
+[RequireComponent(typeof(Collider2D))]
 public abstract class Side : MonoBehaviour
 {
     private GameObject leftBound;
@@ -10,6 +11,8 @@ public abstract class Side : MonoBehaviour
     private Vector3 originalScale;
 
     protected LineRenderer lineRenderer;
+    
+    [SerializeField] [Range(0f, 90f)] float maxReflectionAngle = 80f;
     
     protected virtual void Awake()
     {
@@ -59,5 +62,26 @@ public abstract class Side : MonoBehaviour
         
         // set line renderer positions
         lineRenderer.SetPositions(new[] {leftPosition, rightPosition});
+    }
+    
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ball"))
+        {
+            ReflectBall(collision.GetComponent<Ball>());
+        }
+    }
+
+    protected void ReflectBall(Ball ball)
+    {
+        Vector3 rawReflection = Vector3.Reflect(ball.Direction, GetNormal());
+        var difference = Vector3.SignedAngle(rawReflection, transform.up, transform.forward);
+        difference = Mathf.Clamp(difference, -maxReflectionAngle, maxReflectionAngle);
+        ball.SetVelocity(ball.speed, Quaternion.Euler(0f, 0f, -difference) * transform.up);
+    }
+
+    protected virtual Vector3 GetNormal()
+    {
+        return transform.up;
     }
 }

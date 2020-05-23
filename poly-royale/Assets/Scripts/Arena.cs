@@ -161,11 +161,8 @@ public class Arena : MonoBehaviour
 
         // transition sectors
         polygon = new Polygon(players.Count, radius);
-
-        print("Ratio: " + players.Count / numPlayers);
         
         var time = Mathf.Lerp(startTransitionTime, endTransitionTime, 1.0f - ((float) players.Count / numPlayers));
-        print("Overt Time: " + time);
         SetGoalPositions(overTime: time);
     }
 }

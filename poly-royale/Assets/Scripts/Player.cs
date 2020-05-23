@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections;
-using System.Data;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class Player : Side
 {
     [SerializeField] private float hp;
     [SerializeField] private Color color;
     
-    [SerializeField] private Goal goalPrefab;
     [SerializeField] private Paddle paddlePrefab;
 
     [SerializeField] private float goalDamage;
@@ -26,7 +23,6 @@ public class Player : Side
     private float minX;
     private float maxX;
 
-    private Goal goal;
     private Paddle paddle;
     public Paddle Paddle => paddle;
 
@@ -54,11 +50,9 @@ public class Player : Side
         lineRenderer.material.color = color;
 
         // instantiate entities
-        goal = Instantiate(goalPrefab, parent: transform);
         paddle = Instantiate(paddlePrefab, parent: transform);
 
         // subscribe to goal and paddle
-        goal.OnGoalScored += GoalScored;
         paddle.OnBallHit += BallHit;
         
         // set initial scales
@@ -117,9 +111,6 @@ public class Player : Side
     {
         lastBallScored = ball;
         UpdateHP(-goalDamage);
-        
-        // reflect ball
-        ball.SetVelocity(ball.speed, Vector3.Reflect(ball.transform.up, transform.up));
     }
 
     private void BallHit(Ball ball)
@@ -158,5 +149,16 @@ public class Player : Side
             yield return new WaitForEndOfFrame();
         }
         currentPaddleScaleCoroutine = null;
+    }
+    
+    protected override void OnTriggerEnter2D(Collider2D collision)
+    {
+        base.OnTriggerEnter2D(collision);
+        
+        if (collision.gameObject.CompareTag("Ball"))
+        {
+            lastBallScored = collision.GetComponent<Ball>();
+            UpdateHP(-goalDamage);
+        }
     }
 }

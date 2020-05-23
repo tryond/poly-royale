@@ -28,7 +28,6 @@ public class BallManager : MonoBehaviour
     {
         balls.Remove(ball.GetComponent<Ball>());
         Destroy(ball.gameObject);
-        
     }
 
     public void LaunchBalls(int num, float overTime = 0f, bool random = false)

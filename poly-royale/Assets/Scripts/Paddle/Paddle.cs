@@ -44,7 +44,7 @@ public class Paddle : MonoBehaviour
         var ballVelocity = ball.speed + (ball.speedModifier * (ball.maxSpeed - ball.speed));
         var ballReflection = GetReflectionVector(ball.transform.up).normalized;
         ball.SetVelocity(Mathf.Clamp(ballVelocity, ball.minSpeed, ball.maxSpeed), ballReflection);
-        
+
         // dust particles
         if (dust != null)
         {
