@@ -146,6 +146,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 316bf2668194b4081ab766414282752c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxReflectionAngle: 80
+  lineWidth: 0.25
 --- !u!120 &1775885517238798251
 LineRenderer:
   m_ObjectHideFlags: 0

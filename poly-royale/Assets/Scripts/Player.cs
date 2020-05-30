@@ -4,25 +4,27 @@ using UnityEngine;
 
 public class Player : Side
 {
-    [SerializeField] private float hp;
+    // [Header("Visuals")]
     [SerializeField] private Color color;
     
-    [SerializeField] private Paddle paddlePrefab;
-
+    [Header("Health")]
+    [SerializeField] private float hp;
     [SerializeField] private float goalDamage;
     [SerializeField] private float bumpRegen;
     [SerializeField] private float healthRegen;
-
-    private float basePaddleScaleX;
-    private float minPaddleScaleX;
     
+    [Header("Paddle")]
+    [SerializeField] private Paddle paddlePrefab;
     [SerializeField] private float paddleScaleTime;
+    
     private Coroutine currentPaddleScaleCoroutine = null;
-
     private float maxHP;
     private float minX;
     private float maxX;
 
+    private float basePaddleScaleX;
+    private float minPaddleScaleX;
+    
     private Paddle paddle;
     public Paddle Paddle => paddle;
 

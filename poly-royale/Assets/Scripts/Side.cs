@@ -1,5 +1,4 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
 [RequireComponent(typeof(Collider2D))]
@@ -7,18 +6,20 @@ public abstract class Side : MonoBehaviour
 {
     private GameObject leftBound;
     private GameObject rightBound;
-    
     private Vector3 originalScale;
-
     protected LineRenderer lineRenderer;
     
+    [Header("Physics")]
     [SerializeField] [Range(0f, 90f)] float maxReflectionAngle = 80f;
+
+    [Header("Visuals")]
+    [SerializeField] private float lineWidth = 0.25f;
     
     protected virtual void Awake()
     {
         originalScale = transform.localScale;
         lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.startWidth = 0.25f;
+        lineRenderer.startWidth = lineWidth;
 
         leftBound = new GameObject();
         rightBound = new GameObject();
