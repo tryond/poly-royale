@@ -14,11 +14,15 @@ public class BallManager : MonoBehaviour
     [SerializeField] private float boundsRadius;
     [SerializeField] private Ball ballPrefab;
 
-    private List<Ball> balls;
+    public List<Ball> balls;
     private Coroutine currentLaunch = null;
 
+    public static BallManager current;
+    
     private void Start()
     {
+        current = this;
+        
         // instantiate and store deactivated balls
         balls = new List<Ball>();
         LaunchBalls(numBalls, random: true, overTime: 5f);
@@ -54,7 +58,8 @@ public class BallManager : MonoBehaviour
         for (int i = 0; i < numBalls; ++i)
         {
             var ball = Instantiate(ballPrefab);
-
+            balls.Add(ball);
+            
             // increment by random or uniform amount
             angle = random ? Random.Range(0f, 360f) : i * uniformAngle;
 

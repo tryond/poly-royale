@@ -1,4 +1,5 @@
 ﻿using System;
+using TMPro;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
@@ -9,13 +10,19 @@ public class Ball : MonoBehaviour
     public float minSpeed;
     public float maxSpeed;
     public float speedModifier;
+
+    private static int idCount = 0;
+    private int _id;
+    private int ID { get => _id; }
     
     [SerializeField] private Target targetPrefab;
-    private Target target;
+    public Target target;
 
     public void Awake()
     {
         target = Instantiate(targetPrefab);
+        _id = idCount;
+        idCount++;
     }
 
     public Vector3 Direction
@@ -41,12 +48,8 @@ public class Ball : MonoBehaviour
         foreach (var hit in hits)
         {
             var side = hit.collider.GetComponent<Side>();
-            
-            print("Side = " + side);
-
             if (!side || side == target.Side)
             {
-                print("CONTINUE");
                 continue;
             }
 
@@ -79,11 +82,11 @@ public class Ball : MonoBehaviour
         }
     }
 
-    private void OnBecameInvisible()
-    {
-        speed = minSpeed;
-        gameObject.transform.position = Vector3.zero;
-    }
+    // private void OnBecameInvisible()
+    // {
+    //     speed = minSpeed;
+    //     gameObject.transform.position = Vector3.zero;
+    // }
 
     public void OnDestroy()
     {

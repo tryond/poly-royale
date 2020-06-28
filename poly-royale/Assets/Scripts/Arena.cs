@@ -12,6 +12,7 @@ public class Arena : MonoBehaviour
     
     [SerializeField] int numPlayers;
     [SerializeField] float radius;
+    public float Radius => radius;
     
     [SerializeField] private Player enemyPlayerPrefab;
 

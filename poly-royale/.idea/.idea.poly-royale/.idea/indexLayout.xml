@@ -26,6 +26,7 @@
       <Path>Library</Path>
       <Path>Logs</Path>
       <Path>Temp</Path>
+      <Path>UIElementsSchema</Path>
       <Path>obj</Path>
       <Path>poly-royale-v0.1.app</Path>
     </explicitExcludes>

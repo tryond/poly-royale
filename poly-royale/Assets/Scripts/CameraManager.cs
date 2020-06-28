@@ -74,8 +74,20 @@ public class CameraManager : MonoBehaviour
     {
         // update with main player
         if (playerSide)
+        {
             originalUp = playerSide.transform.up;
-        
+
+            var width = Vector3.Distance(playerSide.LeftBound, playerSide.RightBound);
+            var height = width / camera.aspect;
+            
+            camera.orthographicSize = height * 0.5f;
+
+            var toCenter = -playerSide.transform.position.normalized * height * 0.4f;
+            
+            originalCenter.x = playerSide.transform.position.x + toCenter.x;
+            originalCenter.y = playerSide.transform.position.y + toCenter.y;
+        }
+
         // translate
         var shake = downwardTrauma * downwardTrauma;
         var offsetX = maxHorizontalTranslation * shake * (Mathf.PerlinNoise(seed, Time.time  * translationalFrequency) * 2.0f - 1.0f) * 0.5f;
@@ -92,6 +104,6 @@ public class CameraManager : MonoBehaviour
 
     private void BumpCamera(float force, Vector3 direction)
     {
-        print("BUMP!");
+        // print("BUMP!");
     }
 }
