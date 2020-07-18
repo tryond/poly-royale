@@ -18,9 +18,13 @@ public class Ball : MonoBehaviour
     [SerializeField] private Target targetPrefab;
     public Target target;
 
+    [SerializeField] private GameObject reflectionPrefab;
+    public GameObject reflection;
+
     public void Awake()
     {
         target = Instantiate(targetPrefab);
+        reflection = Instantiate(reflectionPrefab);
         _id = idCount;
         idCount++;
     }

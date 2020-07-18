@@ -62,6 +62,15 @@ public class PlayerController : MonoBehaviour
         else
         {
             paddle.movement = Input.GetAxis("Horizontal");
+
+            foreach (Ball ball in BallManager.current.balls)
+            {
+                // if ball targeting this side
+                if (ball.target.Side == player)
+                {
+                    DrawReflection(ball); 
+                }
+            }
         }
     }
 
@@ -85,7 +94,7 @@ public class PlayerController : MonoBehaviour
             // if ball targeting this side
             if (ball.target.Side == player)
             {
-                DrawReflection(ball);
+                // DrawReflection(ball);
                 
                 // determine if player can get there in time
                 var ballTime = Vector3.Distance(ball.transform.position, ball.target.Point) / ball.speed;
@@ -154,7 +163,9 @@ public class PlayerController : MonoBehaviour
 
             var inVec = intersection - ball.transform.position;
             var refVec = Vector3.Reflect(inVec, transform.up);
-            
+
+            ball.reflection.GetComponent<SpriteRenderer>().enabled = true;
+            ball.reflection.transform.position = intersection + refVec;
             Debug.DrawLine(intersection + refVec, intersection, Color.green, Time.fixedDeltaTime);
         }
         else if (localPos.x > 0.5f)
@@ -166,11 +177,14 @@ public class PlayerController : MonoBehaviour
             var inVec = intersection - ball.transform.position;
             var refVec = Vector3.Reflect(inVec, transform.up);
             
+            ball.reflection.GetComponent<SpriteRenderer>().enabled = true;
+            ball.reflection.transform.position = intersection + refVec;
             Debug.DrawLine(intersection + refVec, intersection, Color.red, Time.fixedDeltaTime);
         }
         else
         {
-            // Debug.DrawLine(paddle.transform.position, ball.transform.position, Color.white, Time.fixedDeltaTime);
+            ball.reflection.GetComponent<SpriteRenderer>().enabled = false;
+            Debug.DrawLine(paddle.transform.position, ball.transform.position, Color.white, Time.fixedDeltaTime);
         }
     }
     

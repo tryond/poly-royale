@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player : Side
 {
     // [Header("Visuals")]
-    [SerializeField] private Color color;
+    public Color color;
     
     [Header("Health")]
     [SerializeField] private float hp;
@@ -65,6 +65,12 @@ public class Player : Side
         UpdatePaddle();
     }
 
+    public void SetColor(Color color)
+    {
+        this.color = color;
+        lineRenderer.material.color = color;
+    }
+    
     public override void SetBounds(Vector3 leftPosition, Vector3 rightPosition)
     {
         base.SetBounds(leftPosition, rightPosition);

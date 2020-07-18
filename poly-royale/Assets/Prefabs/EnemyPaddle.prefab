@@ -145,6 +145,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movement: 0
   maxNormalAngle: 45
-  maxReflectionAngle: 60
+  maxReflectionAngle: 45
   dustPrefab: {fileID: 4268676770751639499, guid: 6364bb5a9ab2848c2a50d3ff6324c851,
     type: 3}

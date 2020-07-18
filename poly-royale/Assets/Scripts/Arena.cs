@@ -51,7 +51,13 @@ public class Arena : MonoBehaviour
         for (int i = 1; i < numPlayers; i++)
             players.Add(Instantiate(enemyPlayerPrefab));
 
-        // listen to all goals
+        // set colors
+        var hueInc = 1f / players.Count;
+        var startHue = hueInc / 2f;
+        for (var i = 0; i < numPlayers; i++)
+            players[i].SetColor(Color.HSVToRGB(startHue + (hueInc * i), 0.6f, 1f));
+
+            // listen to all goals
         foreach (Player p in players)
             p.OnPlayerEliminated += GoalScored;
         

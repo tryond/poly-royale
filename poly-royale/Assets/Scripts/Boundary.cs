@@ -8,7 +8,7 @@ public class Boundary : Side
     protected override void Awake()
     {
         base.Awake();
-        lineRenderer.material.color = Color.yellow;
+        lineRenderer.material.color = Color.white;
     }
 
     // private void OnTriggerEnter2D(Collider2D other)

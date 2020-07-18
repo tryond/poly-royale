@@ -28,6 +28,6 @@ public class PlayerPaddle : Paddle
     protected void OnTriggerEnter2D(Collider2D other)
     {
         base.OnTriggerEnter2D(other);
-        AudioManager.instance.Play("BallHit");
+        // AudioManager.instance.Play("BallHit");
     }
 }
